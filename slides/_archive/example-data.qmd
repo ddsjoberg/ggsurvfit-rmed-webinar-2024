@@ -1,0 +1,28 @@
+# Data
+
+The following examples use a labeled version of the `survival::colon` data set.
+
+```{r}
+#| echo: false
+list(`as_gt-lst:addl_cmds` = list(tab_spanner = rlang::expr(gt::tab_options(table.font.size = 22)))) |> 
+  gtsummary::set_gtsummary_theme()
+```
+
+## Data
+
+```{r}
+library(ggsurvfit)
+library(gtsummary)
+library(tidyverse)
+
+df_colon <- df_colon |> select(time, status, surg)
+df_colon
+```
+
+## Data
+
+```{r}
+#| freeze: false
+df_colon |> 
+  tbl_summary()
+```

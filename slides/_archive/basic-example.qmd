@@ -1,0 +1,98 @@
+# Basic Example
+
+```{r}
+#| echo: false
+#| message: false
+library(ggsurvfit)
+```
+
+::: columns
+::: {.column width="80%"}
+
+```{r}
+survfit2(Surv(time, status) ~ surg, data = df_colon) |> 
+  ggsurvfit() +
+  add_risktable()
+```
+
+:::
+::: {.column width="20%"}
+::: {.smaller}
+::: {.incremental}
+
+* The Good
+  - Simple code and figure is nearly publishable
+  - Risk table with both no. at risk and events easily added
+  - x-axis label taken from the `time` column label
+  - Can use **ggplot2** `+` notation
+
+  
+* The Could-Be-Better
+  - y-axis label is incorrect, and the range of axis is best at 0-100%
+  - Axis padding a bit more than I prefer for a KM figure
+  - x-axis typically has more tick marks for KM figure
+
+:::
+:::
+:::
+:::
+
+# Basic Example
+
+::: columns
+::: {.column width="80%"}
+```{r}
+#| code-line-numbers: "4-5"
+survfit2(Surv(time, status) ~ surg, data = df_colon) |> 
+  ggsurvfit() +
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(y = "Recurrence-free Progression")
+```
+
+:::
+::: {.column width="20%"}
+::: {.smaller}
+::: {.incremental}
+
+* Padding has been reduced and curves begin in the upper left corner of plot
+
+* x-axis reports additional time points (and as a result, the risk table as well)
+
+* We updated the y-axis label weaving standard **ggplot2** functions
+
+:::
+:::
+:::
+:::
+
+
+# Basic Example
+
+::: columns
+::: {.column width="80%"}
+```{r}
+#| code-line-numbers: "6"
+survfit2(Surv(time, status) ~ surg, data = df_colon) |> 
+  ggsurvfit() +
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(y = "Recurrence-free Progression") +
+  ggeasy::easy_move_legend("top")
+```
+
+:::
+::: {.column width="20%"}
+::: {.smaller}
+
+* Padding has been reduced and curves begin in the upper left corner of plot
+
+* x-axis reports additional time points (and as a result, the risk table as well)
+
+* We updated the y-axis label weaving standard **ggplot2** functions
+
+* We can even use ggplot2-extender functions
+
+:::
+:::
+:::

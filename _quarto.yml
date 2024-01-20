@@ -1,0 +1,50 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+    - "!slides/[0-9]*.qmd"
+
+website:
+  page-navigation: true
+  title: "Introduction to the {ggsurvfit} R Package"
+  description: "Webinar R/Medicine+R Consortium 2024"
+  favicon: "images/ggsurvfit-logo.png"
+
+  repo-url: https://github.com/ddsjoberg/ggsurvfit-rmed-webinar-2024
+  repo-actions: [edit, issue]
+
+  page-footer:
+    left: "This page is built with ❤️ and [Quarto](https://quarto.org/). Inspired by [@minecr.bsky.social](https://bsky.app/profile/minecr.bsky.social)."
+    background: "#637563"
+
+  sidebar:
+    background: "#637563"
+    logo: "images/ggsurvfit-logo.png"
+    pinned: true
+    align: center
+    tools:
+      - icon: github
+        href: https://github.com/ddsjoberg/ggsurvfit-rmed-webinar-2024
+        text: GitHub
+    style: docked
+    contents:
+     - href: index.qmd
+       text: Home
+     - href: slidespage.qmd
+       text: Slides
+     - href: https://www.danieldsjoberg.com/ggsurvfit
+       text: Package Website
+     - href: license.qmd
+
+format:
+  html:
+    theme: [cosmo, theme.scss]
+    toc: true
+    code-copy: true
+    code-overflow: scroll
+    mainfont: "Atkinson Hyperlegible"
+    highlight-style: a11y
+
+editor: source
+

@@ -1,0 +1,40 @@
+---
+title: "Visualizing Survival Data with the {ggsurvfit} R Package"
+author: "Daniel D. Sjoberg"
+footer: "[{ggsurvfit} R Package](https://danieldsjoberg.com/ggsurvfit-rmed-webinar-2024)"
+logo: "images/ggsurvfit-logo.png"
+editor: source
+engine: knitr
+format: 
+  revealjs: 
+    theme: slides.scss
+    transition: none #fade
+    slide-number: true
+    chalkboard: true
+execute:
+  echo: true
+  freeze: false
+cache: false
+---
+
+
+{{< include 00-setup.qmd >}}
+
+{{< include 01-overview.qmd >}}
+
+
+
+<!-- {{< include why-ggsurvfit.qmd >}} -->
+
+<!-- {{< include example-data.qmd >}} -->
+
+<!-- {{< include basic-example.qmd >}} -->
+
+<!-- {{< include ggsurvfit-examples.qmd >}} -->
+
+<!-- {{< include KMunicate.qmd >}} -->
+
+<!-- {{< include 03-cdisc.qmd >}} -->
+
+<!-- {{< include conclusion.qmd >}} -->
+

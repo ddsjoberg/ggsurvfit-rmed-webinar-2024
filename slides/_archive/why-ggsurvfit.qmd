@@ -1,0 +1,35 @@
+# Why {ggsurvfit} ?
+
+```{r}
+#| echo: false
+#| message: false
+library(ggsurvfit)
+```
+
+## Use ggplot2 functions
+
+* Each `ggsurvfit` add-on function is written as a proper `ggplot2` geom
+* Enables package functions woven with ggplot2 functions seamlessly 
+* Don’t need to learn to style with `ggsurvfit` functions
+* Use your ggplot2 knowledge if you want to customize 
+
+Limitless customization
+
+* Modify x-axis scales or any other plot feature and risk table will still align with plot
+
+Simple saving and export through `ggplot2::ggsave()`
+
+## Ready to publish legends
+
+* Raw variable names do not appear in the figure 
+
+```{r}
+#| layout-ncol: 2
+#| fig-height: 8
+fit <- survfit2(Surv(time, status) ~ surg, data = df_colon) 
+survminer::ggsurvplot(fit)
+ggsurvfit(fit) + scale_ggsurvfit()
+```
+
+
+

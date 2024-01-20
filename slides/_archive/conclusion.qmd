@@ -1,0 +1,23 @@
+# {ggsurvfit} wrap up
+
+* Ease the creation of time-to-event summary figures with ggplot2
+
+* Concise and modular code
+
+* Ready for publication or sharing figures
+
+* Sensible defaults
+
+* Also supports competing risks cumulative incidence summaries
+
+
+```{r}
+#| eval: false  
+
+# Install ggsurvfit from CRAN with:
+install.packages("ggsurvfit")
+
+# install.packages("devtools"):
+devtools::install_github("pharmaverse/ggsurvfit")
+```
+

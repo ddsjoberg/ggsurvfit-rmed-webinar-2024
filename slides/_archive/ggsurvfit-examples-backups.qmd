@@ -1,0 +1,69 @@
+# Back-up examples
+
+```{r}
+#| echo: false
+#| message: false
+library(ggsurvfit)
+```
+
+Left over examples removed from main deck
+
+## Underyling {ggsurvfit} functions 
+
+In addition to using additional {ggplot2} functions, it is helpful to understand which underlying functions are used to create the figures. 
+
+<!-- The survival lines are drawn with geom_step() and the confidence interval with geom_ribbon(). Users can pass additional arguments to these construction functions in ggsurvfit(...) and add_confidence_interval(...), respectively. In the example below, we use the color and fill aesthetic to change the colors of an unstratified estimate. -->
+
+```{r}
+#| output-location: slide
+#| code-line-numbers: "|2|3|"
+
+survfit2(Surv(time, status) ~ 1, data = df_colon) %>%
+  ggsurvfit(color = "#508050") +
+  add_confidence_interval(fill = "#508050")
+```
+
+
+# Risktable 
+
+## Further customization 
+
+```{r}
+#| output-location: slide
+survfit2(Surv(time, status) ~ surg, data = df_colon) %>%
+  ggsurvfit(linewidth = 0.8) +
+  add_risktable(
+    risktable_height = 0.33,
+    size = 4, # increase font size of risk table statistics
+    theme =   # increase font size of risk table title and y-axis label
+      list(
+        theme_risktable_default(axis.text.y.size = 11, 
+                                plot.title.size = 11),
+        theme(plot.title = element_text(face = "bold"))
+      )
+  )
+```
+
+
+
+
+# Another Example
+
+```{r}
+#| output-location: slide
+#| code-line-numbers: "|2|3|4-5|6|7|8|10-12"
+survfit2(Surv(time, status) ~ surg, data = df_colon) |>
+  ggsurvfit(type = "risk", linewidth = 1.2) +
+  add_confidence_interval() +
+  add_risktable(risktable_stats = "n.risk") +
+  add_risktable_strata_symbol(symbol = "\U25CF", size = 17) +
+  add_quantile(x_value = 5, linetype = "dotted", linewidth = 0.8) +
+  add_censor_mark(size = 2, alpha = 0.2) +
+  add_pvalue(caption = "Log-rank {p.value}") +
+  scale_ggsurvfit() +
+  scale_color_manual(values = c('#54738E', '#82AC7C')) +
+  scale_fill_manual(values = c('#54738E', '#82AC7C')) +
+  labs(y = "Risk of Recurrence")
+```
+
+
