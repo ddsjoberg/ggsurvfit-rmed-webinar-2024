@@ -1,67 +1,24 @@
-# A whistle stop tour of {ggsurvfit}
+## Outline
 
-```{r}
-#| echo: false
-#| message: false
-library(ggsurvfit)
-```
+1. What is survival analysis?
+    
+1. Visualizing Kaplan-Meier
 
-* Motivation and why {ggsurvfit} ? 
+1. Visualizing Competing Risks
 
-* **Overview of package functionality**
+1. Advanced Topics in {ggsurvfit}
 
-* Additional examples 
+    - Combining figures
+    - How Risk Tables are constructed
+    - CDISC Helpers
+
+## Survival Analysis
+
+> Survival times are data that measure follow-up time from a defined starting point to the occurrence of a given event, for example the time from the beginning to the end of a remission period or the time from the diagnosis of a disease to death. Standard statistical techniques cannot usually be applied because the data are often 'censored'. A survival time is described as censored when there is a follow-up time but the event has not yet occurred.
+
+Bewick V, Cheek L, Ball J. *Statistics review 12: survival analysis*. Crit Care. 2004 Oct;8(5):389-94.
 
 
-# Motivation 
-
-## A widely used statistical summary 
-
-::: {.smaller}
-
-Time-to-event (a.k.a Survival or Kaplan-Meier) summaries are commonplace, from oncology to cardiovascular. 
-
-KM displays the estimated cumulative proportion over time of patients who survive (or report an event)
-
-However, it was not such a simple start:
-
-John Tukey insisted Edward L. Kaplan and Paul Meier combine their efforts after submitting independent papers to JASA, which took 4 more years for the authors of the “KM” estimator to publish
-
-Afterwards “Paul Meier himself is said to have spoken with bemusement about people plotting KM estimates over time and was not convinced he actually liked it” [Morris et al, 2018]( https://bmjopen.bmj.com/content/9/9/e030215)
-
+::: {.notes}
+Read this aloud, then rephrase and give examples
 :::
-
-```{r}
-library(survival)
-fit <- survfit(Surv(time, status) ~ surg, data = df_colon) 
-plot(fit)
-```
-
-
-## Can we do better? 
-
-::: {.smaller}
-
-There are many design and analytical choices to be made when designing even a simple KM plot – these choices can lead to wide variation in presentation quality.
-
-:::
-
-```{r}
-library(ggsurvfit)
-fit2 <- survfit2(Surv(time, status) ~ surg, data = df_colon) 
-ggsurvfit(fit2) + scale_ggsurvfit()
-```
-
-## {ggsurvfit} overview
-
-* Ease the creation of time-to-event summary figures with ggplot2
-
-* Concise and modular code 
-
-* Ready for publication or sharing figures
-
-* Sensible defaults
-
-* Supports CDISC data model
-
-* Also supports competing risks cumulative incidence summaries  
