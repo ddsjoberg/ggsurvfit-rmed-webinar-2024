@@ -30,6 +30,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -342,50 +407,163 @@ Daniel D. Sjoberg
 <section class="slide level2">
 
 <!-- {{< include 00-setup.qmd >}} -->
+<!-- {{< include 01-overview.qmd >}} -->
+<!-- {{< include 02-why-ggsurvfit.qmd >}} -->
+<!-- {{< include 03-example-data.qmd >}} -->
 </section>
-<section id="outline" class="slide level2">
-<h2>Outline</h2>
-<ol type="1">
-<li><p>What is survival analysis?</p></li>
-<li><p>Visualizing Kaplan-Meier</p></li>
-<li><p>Visualizing Competing Risks</p></li>
-<li><p>Advanced Topics in {ggsurvfit}</p>
+<section id="kaplan-meier-basics" class="slide level2">
+<h2>Kaplan-Meier Basics</h2>
 <ul>
-<li>Combining figures</li>
-<li>How Risk Tables are constructed</li>
-<li>CDISC Helpers</li>
-</ul></li>
-</ol>
+<li><p>How do we calculate the Kaplan-Meier estimator?</p></li>
+<li><p>They look the same, right?</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>sf1 <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">survfit</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon)</span>
+<span id="cb1-2"><a href="#cb1-2"></a>sf1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: survfit(formula = Surv(time, status) ~ surg, data = df_colon)
+
+                                   n events median 0.95LCL 0.95UCL
+surg=Limited Time Since Surgery  682    327     NA    4.77      NA
+surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>sf2 <span class="ot">&lt;-</span> ggsurvfit<span class="sc">::</span><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>sf2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: survfit(formula = Surv(time, status) ~ surg, data = df_colon)
+
+                                   n events median 0.95LCL 0.95UCL
+surg=Limited Time Since Surgery  682    327     NA    4.77      NA
+surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
+</div>
+</div>
 </section>
-<section id="survival-analysis" class="slide level2">
-<h2>Survival Analysis</h2>
-<blockquote>
-<p>Survival times are data that measure follow-up time from a defined starting point to the occurrence of a given event, for example the time from the beginning to the end of a remission period or the time from the diagnosis of a disease to death. Standard statistical techniques cannot usually be applied because the data are often ‘censored’. A survival time is described as censored when there is a follow-up time but the event has not yet occurred.</p>
-</blockquote>
-<p>Bewick V, Cheek L, Ball J. <em>Statistics review 12: survival analysis</em>. Crit Care. 2004 Oct;8(5):389-94.</p>
-<aside class="notes">
-<p>Read this aloud, then rephrase and give examples</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<!-- {{< include why-ggsurvfit.qmd >}} -->
-<!-- {{< include example-data.qmd >}} -->
-<!-- {{< include basic-example.qmd >}} -->
+<section id="kaplan-meier-basics-1" class="slide level2">
+<h2>Kaplan-Meier Basics</h2>
+<div class="small">
+<p>What is the difference?</p>
+<ul>
+<li><p><code>ggsurvfit::survfit2()</code> tracks the environment from which the call was made</p></li>
+<li><p>Accurately reconstruct or parse call at any point post estimation</p></li>
+<li><p>Call is parsed when p-values are reported and when labels are created</p></li>
+<li><p>Most functions in the package work with both <code>survfit2()</code> and <code>survfit()</code>; however, the output will be styled in a preferable format with <code>survfit2()</code>.</p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>waldo<span class="sc">::</span><span class="fu">compare</span>(sf1, sf2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>`old` is length 17
+`new` is length 18
+
+`class(old)`: "survfit"           
+`class(new)`: "survfit2" "survfit"
+
+`names(old)[15:17]`: "lower" "upper" "call"               
+`names(new)[15:18]`: "lower" "upper" "call" ".Environment"
+
+`old$.Environment` is absent
+`new$.Environment` is an environment</code></pre>
+</div>
+</div>
+</section>
+<section id="basic-example" class="slide level2">
+<h2>Basic Example</h2>
+<div class="columns">
+<div class="column" style="width:80%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">add_risktable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+</div>
+</div>
+</div><div class="column" style="width:20%;">
+<div class="smaller">
+<div>
+<ul>
+<li class="fragment"><strong>The Good</strong>
+<ul>
+<li class="fragment">Simple code and figure is nearly publishable</li>
+<li class="fragment">Risk table with both no. at risk and events easily added</li>
+<li class="fragment">x-axis label taken from the <code>time</code> column label</li>
+<li class="fragment">Can use <strong>ggplot2</strong> <code>+</code> notation</li>
+</ul></li>
+<li class="fragment"><strong>The Could-Be-Better</strong>
+<ul>
+<li class="fragment">y-axis label is incorrect, and the range of axis is best at 0-100%</li>
+<li class="fragment">Axis padding a bit more than I prefer for a KM figure</li>
+<li class="fragment">x-axis typically has more tick marks for KM figure</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="basic-example-1" class="title-slide slide level1 center">
+<h1>Basic Example</h1>
+<div class="columns">
+<div class="column" style="width:80%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" data-code-line-numbers="4-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
+</div>
+</div>
+</div><div class="column" style="width:20%;">
+<div class="smaller">
+<div>
+<ul>
+<li class="fragment"><p>Padding has been reduced and curves begin in the upper left corner of plot</p></li>
+<li class="fragment"><p>x-axis reports additional time points (and as a result, the risk table as well)</p></li>
+<li class="fragment"><p>We updated the y-axis label weaving standard <strong>ggplot2</strong> functions</p></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="basic-example-2" class="title-slide slide level1 center">
+<h1>Basic Example</h1>
+<div class="columns">
+<div class="column" style="width:80%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" data-code-line-numbers="6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>) <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>  ggeasy<span class="sc">::</span><span class="fu">easy_move_legend</span>(<span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+</div>
+</div>
+</div><div class="column" style="width:20%;">
+<div class="smaller">
+<ul>
+<li><p>Padding has been reduced and curves begin in the upper left corner of plot</p></li>
+<li><p>x-axis reports additional time points (and as a result, the risk table as well)</p></li>
+<li><p>We updated the y-axis label weaving standard <strong>ggplot2</strong> functions</p></li>
+<li><p>We can even use ggplot2-extender functions</p></li>
+</ul>
+</div>
+</div>
+</div>
 <!-- {{< include ggsurvfit-examples.qmd >}} -->
 <!-- {{< include KMunicate.qmd >}} -->
 <!-- {{< include 03-cdisc.qmd >}} -->
 <!-- {{< include conclusion.qmd >}} -->
 
-
-<img src="images/ggsurvfit-logo.png" class="slide-logo r-stretch"><div class="footer footer-default">
+<p><img src="images/ggsurvfit-logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
 <p><a href="https://danieldsjoberg.com/ggsurvfit-rmed-webinar-2024">{ggsurvfit} R Package</a></p>
 </div>
 </section>

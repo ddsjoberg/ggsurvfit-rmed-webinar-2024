@@ -14,17 +14,24 @@
     "text": "🗓 January 25, 2024 | Time 4:00PM PST, 7:00PM EST\n\n💥 Register for link to join the webinar\n\n\nAbstract\nThe {ggsurvfit} package eases the creation of time-to-event or survival analysis summary figures with {ggplot2}, such as a Kaplan-Meier plot. The concise and modular code creates figures ready for publication. Each {ggsurvfit} function (e.g. add_confidence_interval(), add_risktable(), etc.) is written as a proper {ggplot2} ‘geom’, meaning the package functions can be woven with {ggplot2} functions. The implication is that you do not need to learn new functions to style the plot: rather, you may rely on the suite of {ggplot2} functions you already know.\nLastly, the package includes gems for those using the CDISC ADaM ADTTE data model. The “PARAM” value is used to construct enhanced labels in the figure. The event indicator, “CNSR”, is coded in the opposite way the {survival} package expects. This difference creates an opportunity for errors to be silently introduced in an analysis. The {ggsurvfit} package exports a function called Surv_CNSR() to resolve this concern by creating a survival object that uses ADTTE coding conventions as the default. The function can be used in {ggsurvfit} as well as any other package with a survival endpoint.\nInstall {ggsurvfit} from CRAN with\ninstall.packages('ggsurvfit')\n\n\nAuthor\n\nDaniel D. Sjoberg (he/him) is a Senior Principal Data Scientist at Genentech. Previously, he was a Lead Data Science Manager at the Prostate Cancer Clinical Trials Consortium, and a Senior Biostatistician at Memorial Sloan Kettering Cancer Center in New York City. He enjoys R package development, creating many packages available on CRAN, R-Universe, and GitHub. His research interests include adaptive methods in clinical trials, precision medicine, and predictive modeling. Daniel is the winner of the 2021 American Statistical Association (ASA) Innovation in Statistical Programming and Analytics award."
   },
   {
-    "objectID": "slides/index.html#outline",
-    "href": "slides/index.html#outline",
+    "objectID": "slides/index.html#kaplan-meier-basics",
+    "href": "slides/index.html#kaplan-meier-basics",
     "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
-    "section": "Outline",
-    "text": "Outline\n\nWhat is survival analysis?\nVisualizing Kaplan-Meier\nVisualizing Competing Risks\nAdvanced Topics in {ggsurvfit}\n\nCombining figures\nHow Risk Tables are constructed\nCDISC Helpers"
+    "section": "Kaplan-Meier Basics",
+    "text": "Kaplan-Meier Basics\n\nHow do we calculate the Kaplan-Meier estimator?\nThey look the same, right?\n\n\nsf1 &lt;- survival::survfit(Surv(time, status) ~ surg, data = df_colon)\nsf1\n\nCall: survfit(formula = Surv(time, status) ~ surg, data = df_colon)\n\n                                   n events median 0.95LCL 0.95UCL\nsurg=Limited Time Since Surgery  682    327     NA    4.77      NA\nsurg=Extended Time Since Surgery 247    141   3.03    2.01    5.55\n\n\n\nsf2 &lt;- ggsurvfit::survfit2(Surv(time, status) ~ surg, data = df_colon)\nsf2\n\nCall: survfit(formula = Surv(time, status) ~ surg, data = df_colon)\n\n                                   n events median 0.95LCL 0.95UCL\nsurg=Limited Time Since Surgery  682    327     NA    4.77      NA\nsurg=Extended Time Since Surgery 247    141   3.03    2.01    5.55"
   },
   {
-    "objectID": "slides/index.html#survival-analysis",
-    "href": "slides/index.html#survival-analysis",
+    "objectID": "slides/index.html#kaplan-meier-basics-1",
+    "href": "slides/index.html#kaplan-meier-basics-1",
     "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
-    "section": "Survival Analysis",
-    "text": "Survival Analysis\n\nSurvival times are data that measure follow-up time from a defined starting point to the occurrence of a given event, for example the time from the beginning to the end of a remission period or the time from the diagnosis of a disease to death. Standard statistical techniques cannot usually be applied because the data are often ‘censored’. A survival time is described as censored when there is a follow-up time but the event has not yet occurred.\n\nBewick V, Cheek L, Ball J. Statistics review 12: survival analysis. Crit Care. 2004 Oct;8(5):389-94.\n\nRead this aloud, then rephrase and give examples\n\n\n\n\n\n\n\n\n\n\n\n{ggsurvfit} R Package"
+    "section": "Kaplan-Meier Basics",
+    "text": "Kaplan-Meier Basics\n\nWhat is the difference?\n\nggsurvfit::survfit2() tracks the environment from which the call was made\nAccurately reconstruct or parse call at any point post estimation\nCall is parsed when p-values are reported and when labels are created\nMost functions in the package work with both survfit2() and survfit(); however, the output will be styled in a preferable format with survfit2().\n\n\n\nwaldo::compare(sf1, sf2)\n\n`old` is length 17\n`new` is length 18\n\n`class(old)`: \"survfit\"           \n`class(new)`: \"survfit2\" \"survfit\"\n\n`names(old)[15:17]`: \"lower\" \"upper\" \"call\"               \n`names(new)[15:18]`: \"lower\" \"upper\" \"call\" \".Environment\"\n\n`old$.Environment` is absent\n`new$.Environment` is an environment"
+  },
+  {
+    "objectID": "slides/index.html#basic-example",
+    "href": "slides/index.html#basic-example",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Basic Example",
+    "text": "Basic Example\n\n\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt; \n  ggsurvfit() +\n  add_risktable()\n\n\n\n\n\n\n\n\nThe Good\n\nSimple code and figure is nearly publishable\nRisk table with both no. at risk and events easily added\nx-axis label taken from the time column label\nCan use ggplot2 + notation\n\nThe Could-Be-Better\n\ny-axis label is incorrect, and the range of axis is best at 0-100%\nAxis padding a bit more than I prefer for a KM figure\nx-axis typically has more tick marks for KM figure"
   }
 ]
