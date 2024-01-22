@@ -1,0 +1,232 @@
+# Additional examples
+
+# Default and styled modifications with ggplot2
+
+
+```{r}
+#| echo: false
+#| message: false
+library(ggsurvfit)
+library(tidyverse)
+```
+
+
+## {ggsurvfit} defaults 
+
+
+```{r}
+gg_default <-
+  survfit2(Surv(time, status) ~ surg, data = df_colon) |>
+  ggsurvfit(size = 1) +
+  add_confidence_interval() +
+  labs(title = "Default")
+
+gg_default
+```
+
+
+## {ggplot2} styled 
+
+
+
+```{r}
+#| output-location: slide
+#| code-line-numbers: "|2|3|4-8|9|10-11|12-13|14|15-18|"
+
+gg_styled <-
+  gg_default +
+  coord_cartesian(xlim = c(0, 8)) +
+  scale_y_continuous(
+    limits = c(0, 1),
+    labels = scales::percent, 
+    expand = c(0.01, 0)
+  ) +
+  scale_x_continuous(breaks = 0:9, expand = c(0.02, 0)) +
+  scale_color_manual(values = c('#54738E', '#82AC7C')) +
+  scale_fill_manual(values = c('#54738E', '#82AC7C')) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  guides(color = guide_legend(ncol = 1)) +
+  labs(
+    title = "{ggplot2} styled",
+    y = "Percentage Survival"
+  )
+
+gg_styled
+```
+
+
+
+
+# Risk tables 
+
+## {ggsurvfit} defaults
+
+
+```{r}
+survfit2(Surv(time, status) ~ surg, data = df_colon) |>
+  ggsurvfit(size = 1) +
+  add_risktable()
+```
+
+
+
+## Group by statistic or strata 
+
+
+```{r}
+ggrisktable <-
+  survfit2(Surv(time, status) ~ surg, data = df_colon) |>
+  ggsurvfit() +
+  scale_ggsurvfit() +
+  add_risktable(risktable_group = "risktable_stats") 
+ggrisktable
+```
+
+
+## Color encoding strata
+ 
+
+```{r}
+ggrisktable +
+  add_risktable_strata_symbol(symbol = "\U25CF", size = 12)
+```
+
+
+
+
+## Customizing the risktable statistics
+
+
+```{r}
+survfit2(Surv(time, status) ~ surg, data = df_colon) |>
+  ggsurvfit() +
+  add_risktable(risktable_stats = "{n.risk} ({cum.event})") 
+```
+
+
+
+
+# Quantiles 
+
+## Median summary 
+
+
+```{r}
+survfit2(Surv(time, status) ~ surg, data = df_colon) |>
+  ggsurvfit(linewidth = 0.8) +
+  add_censor_mark() +
+  add_quantile(y_value = 0.5) +
+  scale_ggsurvfit()
+```
+
+
+## At a given timepoint
+
+
+```{r}
+survfit2(Surv(time, status) ~ surg, data = df_colon) |>
+  ggsurvfit(linewidth = 0.8) +
+  add_censor_mark() +
+  add_quantile(x_value = 5, linetype = "solid", linewidth = 1.0, alpha = 0.3) +
+  scale_ggsurvfit()
+```
+
+
+## Underyling {ggsurvfit} functions 
+
+In addition to using additional {ggplot2} functions, it is helpful to understand which underlying functions are used to create the figures.
+
+Additional arguments can be passed to the underlying functions.
+
+:::: {.columns}
+::: {.column width="50%"}
+
+
+```{r echo=FALSE}
+tribble(
+  ~ggsurvfit, ~underlying,
+  "`ggsurvfit(...)`", "`geom_step(...)`",
+  "`add_confidence_interval(...)`", "`geom_ribbon(...)`",
+  "`add_censor_mark(...)`", "`geom_point(...)`",
+  "`add_quantile(...)`", "`geom_segment(...)`"
+) |> 
+  gt::gt() |> 
+  gt::cols_label(ggsurvfit = "{ggsurvfit}",
+                 underlying = "Underlying {ggplot2}") |> 
+  gt::fmt_markdown()
+```
+
+```{r}
+#| output-location: slide
+#| code-line-numbers: "|2|3|"
+
+p <- 
+  survfit2(Surv(time, status) ~ 1, 
+           data = df_colon) |> 
+  ggsurvfit(color = "#508050") +
+  add_confidence_interval(
+    fill = "#508050"
+  ) +
+  add_censor_mark(color = "#508050", 
+                  alpha = 100)
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r echo=FALSE}
+p
+```
+
+
+:::
+
+::::
+
+## Further Risktable Customization 
+
+
+```{r}
+#| output-location: slide
+survfit2(Surv(time, status) ~ surg, data = df_colon) %>%
+  ggsurvfit(linewidth = 0.8) +
+  add_risktable(
+    risktable_height = 0.33,
+    size = 4, # increase font size of risk table statistics
+    theme =   # increase font size of risk table title and y-axis label
+      list(
+        theme_risktable_default(axis.text.y.size = 11, 
+                                plot.title.size = 11),
+        theme(plot.title = element_text(face = "bold"))
+      )
+  )
+```
+
+
+
+
+
+# Another Example
+
+
+```{r}
+#| output-location: slide
+#| code-line-numbers: "|4|5-7|8-9"
+survfit2(Surv(time, status) ~ surg, data = df_colon) |>
+  ggsurvfit(type = "risk", linewidth = 1.2) +
+  add_confidence_interval() +
+  add_risktable(risktable_stats = "n.risk") +
+  add_risktable_strata_symbol(symbol = "\U25CF", size = 17) +
+  add_quantile(x_value = 5, linetype = "dotted", linewidth = 0.8) +
+  add_censor_mark(size = 2, alpha = 0.2) +
+  add_pvalue(caption = "Log-rank {p.value}") +
+  scale_ggsurvfit() +
+  scale_color_manual(values = c('#54738E', '#82AC7C')) +
+  scale_fill_manual(values = c('#54738E', '#82AC7C')) +
+  labs(y = "Risk of Recurrence")
+```
+

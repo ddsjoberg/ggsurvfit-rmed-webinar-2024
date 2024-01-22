@@ -22,19 +22,19 @@ library(tidyverse)
 library(ggsurvfit)
 ```
 
-<!-- {{< include 00-setup.qmd >}} -->
+{{< include 00-setup.qmd >}}
 
-<!-- {{< include 01-overview.qmd >}} -->
+{{< include 01-overview.qmd >}}
 
-<!-- {{< include 02-why-ggsurvfit.qmd >}} -->
+{{< include 02-why-ggsurvfit.qmd >}}
 
-<!-- {{< include 03-example-data.qmd >}} -->
+{{< include 03-example-data.qmd >}}
 
 {{< include 04-basic-example.qmd >}}
 
-<!-- {{< include ggsurvfit-examples.qmd >}} -->
+{{< include 05-ggsurvfit-examples.qmd >}}
 
-<!-- {{< include KMunicate.qmd >}} -->
+{{< include 06-KMunicate.qmd >}}
 
 <!-- {{< include 03-cdisc.qmd >}} -->
 
