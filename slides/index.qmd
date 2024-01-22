@@ -36,7 +36,11 @@ library(ggsurvfit)
 
 {{< include 06-KMunicate.qmd >}}
 
-<!-- {{< include 03-cdisc.qmd >}} -->
+{{< include 07-cdisc.qmd >}}
 
-<!-- {{< include conclusion.qmd >}} -->
+{{< include 08-competing-risks.qmd >}}
+
+{{< include 09-building.qmd >}}
+
+{{< include 10-conclusion.qmd >}}
 

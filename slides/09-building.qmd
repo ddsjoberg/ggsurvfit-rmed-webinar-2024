@@ -1,0 +1,34 @@
+## Side-by-Side
+
+```{r echo=FALSE}
+library(ggsurvfit)
+library(tidyverse)
+```
+
+- You'll often need to place two or more figures side-by-side
+
+- My favorite package to do this is {patchwork}
+
+- But before you can use {patchwork} with {ggsurvfit}, you need to understand a bit about how these figures are constructed
+
+  - The risktables are only added to the figure __during printing__ by calling the `ggsurvfit_build()` function
+  
+  - This means that you __must build the plot__ before you can cobble figures together
+  
+- I have an open issue in {patchwork} to add a feature so we can avoid this extra step
+  
+  
+## Side-by-Side
+
+```{r fig.height=3.5}
+p <- survfit2(Surv(time, status) ~ 1, df_colon) %>%
+  ggsurvfit() +
+  add_confidence_interval() +
+  add_risktable() +
+  scale_ggsurvfit()
+
+# build plot (which constructs the risktable)
+built_p <- ggsurvfit_build(p) |> patchwork::wrap_plots()
+
+built_p | built_p
+```

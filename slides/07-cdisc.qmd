@@ -1,0 +1,30 @@
+## CDISC ADaM ADTTE
+
+```{r echo=FALSE}
+library(ggsurvfit)
+library(tidyverse)
+```
+
+Gems for those using the **CDISC ADaM ADTTE** model.
+
+- The outcome is coded in the **OPPOSITE** way we expect!😱😱
+  - The `Surv_CNSR()` function handles the transformation for us
+  - `survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)`
+  - This function can be used __anywhere__: use it! Don't screw it up!
+  
+- The “PARAM” value is used to construct enhanced labels in the figure.
+
+```{r}
+adtte |> select(PARAM, AVAL, CNSR, TRT01P) |> head(3)
+```
+
+## CDISC ADaM ADTTE
+
+```{r}
+survfit2(Surv_CNSR() ~ TRT01P, adtte) |> 
+  ggsurvfit(size = 1) + 
+  scale_ggsurvfit() +
+  add_risktable(risktable_stats = "n.risk") +
+  add_risktable_strata_symbol()
+```
+

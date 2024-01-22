@@ -1,0 +1,30 @@
+## Competing Risks
+
+```{r echo=FALSE}
+library(ggsurvfit)
+library(tidyverse)
+```
+
+- There is another _flavor_ of survival data referred to as competing risks data.
+
+- The most common type of a competing risk is an event that drives the probability of observing our event of interest to zero.
+
+- For example, if we are interested in model the time from a treatment to a disease's return or recurrence...what do we do if a patient passes away from an unrelated cause?
+
+- In this case, death from other causes is a competing event.
+
+- The {ggsurvfit} package plays nicely with the {tidycmprsk} package for competing risks analysis.
+
+::: {.notes}
+Well that sounds confusing!
+:::
+
+## Competing Risks
+
+```{r}
+tidycmprsk::cuminc(Surv(ttdeath, death_cr) ~ trt, tidycmprsk::trial) %>%
+  ggcuminc(outcome = "death from cancer") +
+  add_confidence_interval() +
+  add_risktable() +
+  scale_ggsurvfit()
+```

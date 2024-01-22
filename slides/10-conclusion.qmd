@@ -10,14 +10,3 @@
 
 * Also supports competing risks cumulative incidence summaries
 
-
-```{r}
-#| eval: false  
-
-# Install ggsurvfit from CRAN with:
-install.packages("ggsurvfit")
-
-# install.packages("devtools"):
-devtools::install_github("pharmaverse/ggsurvfit")
-```
-
