@@ -17,18 +17,20 @@ execute:
 cache: false
 ---
 
+```{r echo=FALSE}
+library(tidyverse)
+library(ggsurvfit)
+```
 
 <!-- {{< include 00-setup.qmd >}} -->
 
-{{< include 01-overview.qmd >}}
+<!-- {{< include 01-overview.qmd >}} -->
 
+<!-- {{< include 02-why-ggsurvfit.qmd >}} -->
 
+<!-- {{< include 03-example-data.qmd >}} -->
 
-<!-- {{< include why-ggsurvfit.qmd >}} -->
-
-<!-- {{< include example-data.qmd >}} -->
-
-<!-- {{< include basic-example.qmd >}} -->
+{{< include 04-basic-example.qmd >}}
 
 <!-- {{< include ggsurvfit-examples.qmd >}} -->
 

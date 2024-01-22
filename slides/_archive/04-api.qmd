@@ -1,5 +1,0 @@
-# API
-
-## `add_confidence_interval()` 
-
-## `add_risktable()`

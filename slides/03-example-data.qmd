@@ -1,4 +1,4 @@
-# Data
+## Data
 
 The following examples use a labeled version of the `survival::colon` data set.
 
@@ -24,5 +24,7 @@ df_colon
 ```{r}
 #| freeze: false
 df_colon |> 
-  tbl_summary()
+  tbl_summary(statistic = status ~ "{n} / {N}") |> 
+  add_stat_label() |> 
+  bold_labels()
 ```

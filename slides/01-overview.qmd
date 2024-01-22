@@ -14,6 +14,23 @@
 
 ## Survival Analysis
 
+This is the briefest overview. 
+For more details, review the resources below.
+
+::: {.small}
+
+> Clark, T., Bradburn, M., Love, S., & Altman, D. (2003). _Survival analysis part I: Basic concepts and first analyses_. 232-238. ISSN 0007-0920.
+
+> M J Bradburn, T G Clark, S B Love, & D G Altman. (2003). _Survival Analysis Part II: Multivariate data analysis – an introduction to concepts and methods. British Journal of Cancer, 89(3), 431-436.
+
+> Bradburn, M., Clark, T., Love, S., & Altman, D. (2003). Survival analysis Part III: Multivariate data analysis – choosing a model and assessing its adequacy and fit_. 89(4), 605-11.
+
+> Clark, T., Bradburn, M., Love, S., & Altman, D. (2003). _Survival analysis part IV: Further concepts and methods in survival analysis_. 781-786. ISSN 0007-0920.
+
+:::
+
+## Survival Analysis
+
 > Survival times are data that measure follow-up time from a defined starting point to the occurrence of a given event, for example the time from the beginning to the end of a remission period or the time from the diagnosis of a disease to death. Standard statistical techniques cannot usually be applied because the data are often 'censored'. A survival time is described as censored when there is a follow-up time but the event has not yet occurred.
 
 Bewick V, Cheek L, Ball J. *Statistics review 12: survival analysis*. Crit Care. 2004 Oct;8(5):389-94.
@@ -22,3 +39,212 @@ Bewick V, Cheek L, Ball J. *Statistics review 12: survival analysis*. Crit Care.
 ::: {.notes}
 Read this aloud, then rephrase and give examples
 :::
+
+## Survival Analysis
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Because survival data are common in many fields, it also goes by other names.
+
+**Other Names**
+
+- Reliability analysis
+
+- Duration analysis
+
+- Event history analysis
+
+- Time-to-event analysis
+
+:::
+::: {.column width="50%"}
+
+**Examples**
+
+- Time from surgery to death
+
+- Time from start of treatment to progression
+
+- Time from HIV infection to development of AIDS
+
+- Time to heart attack
+
+- Time to onset of substance abuse
+
+- Time to initiation of sexual activity
+ 
+- Time to machine malfunction
+
+:::
+::::
+
+## Survival Analysis, No Censoring
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+```{r echo=FALSE, fig.width=6}
+set.seed(123)
+
+df_censoring <-
+  tibble(full_time = rgamma(n = 5, shape = 1)) |> 
+  mutate(
+  obs_time = ifelse(
+    row_number() < 3, 
+    full_time,
+    full_time * runif(n = 5)
+  ),
+  death = obs_time == full_time,
+  id = rev(row_number())
+)
+
+df_censoring |> 
+  ggplot(aes(y = id)) +
+  geom_segment(
+    aes(yend = id, xend = 0, x = full_time),
+    linetype = "solid",
+    linewidth = 8,
+    lineend='round',
+    color = "#3c523c"
+  ) +
+  emoGG::geom_emoji(
+    aes(y = id, x = full_time),
+    emoji = "1f480"
+  ) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 20, face = "bold"),
+        axis.title.y = element_blank(),
+        axis.text=element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        aspect.ratio = 1) +
+  labs(
+    title = "Time from Treatment to Death",
+    x = "Time"
+  )
+```
+
+:::
+
+::: {.column width="40%"}
+- The skulls are the time when each of these patients die
+
+- We observe the follow-up in the solid line
+
+- How can we summarize the time from treatment to death?
+
+:::
+
+::::
+
+
+::: {.notes}
+- We can use a simple mean, median, etc.
+:::
+
+## Survival Analysis, Censoring
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+```{r echo=FALSE, fig.width=6}
+df_censoring |> 
+  ggplot(aes(y = id)) +
+  geom_segment(
+    aes(yend = id, xend = full_time, x = obs_time),
+    linetype = "dotted",
+    linewidth = 2,
+    color = "grey",
+    lineend='round'
+  ) +
+  geom_segment(
+    aes(yend = id, xend = 0, x = obs_time),
+    linetype = "solid",
+    linewidth = 8,
+    lineend='round',
+    color = "#3c523c"
+  ) +
+  emoGG::geom_emoji(
+    aes(y = id, x = full_time),
+    emoji = "1f480"
+  ) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 20, face = "bold"),
+        axis.title.y = element_blank(),
+        axis.text=element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        aspect.ratio = 1) +
+  labs(
+    title = "Time from Treatment to Death",
+    x = "Time"
+  )
+```
+
+:::
+
+::: {.column width="40%"}
+- The skulls are the time when each of these patients die
+
+- We observe the follow-up in the solid line
+
+- The dashed line in __unobserved__
+
+- How can we summarize the average time from treatment to death?
+
+:::
+
+::::
+
+::: {.notes}
+Censoring occurs if a subject has not experienced the event of interest by the end of data collection.
+
+A subject may be censored due to:
+
+- Loss to follow-up
+
+- Withdrawal from study
+
+- No event by end of fixed study period
+
+When censoring is present, the analytic method MUST take this into account.
+:::
+
+## Survival Analysis Methods
+
+
+```{r echo=FALSE}
+tribble(
+  ~method, ~survival_method,
+  "Means/Median/Percentiles", "Kaplan-Meier Estimator",
+  "t-test/Rank-sum Test", "Log-rank Test",
+  "Linear/Logistic Regression", "Cox Proportional Hazards Regression"
+) |> 
+  gt::gt() |> 
+  gt::tab_options(table.font.size = 34) |> 
+  gt::cols_label(
+    method = gt::md("**Standard Method**"),
+    survival_method = gt::md("**Survival Method**")
+  ) |> 
+  gt::tab_footnote(
+    "There are multiple methods available tailored to specific cases and these are the most common.",
+    locations = gt::cells_column_labels(columns = survival_method)
+  ) |> 
+  gt::tab_footnote(
+    "We will not be covering regression methods today.",
+    locations = gt::cells_body(columns = survival_method, rows = str_detect(survival_method, "Cox"))
+  )
+```
+
+
+::: {.notes}
+We'll primarily be covering Kaplan-Meier methods today.
+:::
+
+

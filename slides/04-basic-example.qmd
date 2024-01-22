@@ -1,4 +1,42 @@
-# Basic Example
+## Kaplan-Meier Basics
+
+- How do we calculate the Kaplan-Meier estimator?
+
+- They look the same, right?
+
+```{r}
+sf1 <- survival::survfit(Surv(time, status) ~ surg, data = df_colon)
+sf1
+```
+
+
+```{r}
+sf2 <- ggsurvfit::survfit2(Surv(time, status) ~ surg, data = df_colon)
+sf2
+```
+
+
+## Kaplan-Meier Basics
+
+::: {.small}
+
+What is the difference?
+
+- `ggsurvfit::survfit2()` tracks the environment from which the call was made
+
+- Accurately reconstruct or parse call at any point post estimation
+
+- Call is parsed when p-values are reported and when labels are created
+
+- Most functions in the package work with both `survfit2()` and `survfit()`; however, the output will be styled in a preferable format with `survfit2()`.
+
+:::
+
+```{r}
+waldo::compare(sf1, sf2)
+```
+
+## Basic Example
 
 ```{r}
 #| echo: false
@@ -20,14 +58,14 @@ survfit2(Surv(time, status) ~ surg, data = df_colon) |>
 ::: {.smaller}
 ::: {.incremental}
 
-* The Good
+* **The Good**
   - Simple code and figure is nearly publishable
   - Risk table with both no. at risk and events easily added
   - x-axis label taken from the `time` column label
   - Can use **ggplot2** `+` notation
 
   
-* The Could-Be-Better
+* **The Could-Be-Better**
   - y-axis label is incorrect, and the range of axis is best at 0-100%
   - Axis padding a bit more than I prefer for a KM figure
   - x-axis typically has more tick marks for KM figure
