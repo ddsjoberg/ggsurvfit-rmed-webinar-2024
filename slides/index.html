@@ -404,12 +404,1200 @@ Daniel D. Sjoberg
 </div>
 
 </section>
-<section class="slide level2">
+<section>
+<section id="ggsurvfit" class="title-slide slide level1 center">
+<h1>{ggsurvfit}</h1>
 
-<!-- {{< include 00-setup.qmd >}} -->
-<!-- {{< include 01-overview.qmd >}} -->
-<!-- {{< include 02-why-ggsurvfit.qmd >}} -->
-<!-- {{< include 03-example-data.qmd >}} -->
+</section>
+<section id="licensing" class="slide level2">
+<h2>Licensing</h2>
+<p><br></p>
+<p>This work is licensed under <a href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons Zero v1.0 Universal</a>.</p>
+</section>
+<section id="authors" class="slide level2">
+<h2>Authors</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="center">
+<p><strong>Daniel D. Sjoberg</strong></p>
+<p><img data-src="images/dan-circle-cropped.png" style="width:70.0%"> <img data-src="images/genentech-logo.png" style="width:50.0%"></p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="small">
+<ul>
+<li><p>Senior Principal Data Scientist at Genentech.</p></li>
+<li><p>Previously, a Lead Data Science Manager at the Prostate Cancer Clinical Trials Consortium, and a Senior Biostatistician at Memorial Sloan Kettering Cancer Center in New York City.</p></li>
+<li><p>He enjoys R package development, creating many packages available on <a href="https://cran.r-project.org/web/packages/">CRAN</a>, <a href="https://ddsjoberg.r-universe.dev/ui#packages">R-Universe</a>, and <a href="https://github.com/ddsjoberg">GitHub</a>.</p></li>
+<li><p>Winner of the 2021 American Statistical Association (ASA) Innovation in Statistical Programming and Analytics award.</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="outline" class="slide level2">
+<h2>Outline</h2>
+<ol type="1">
+<li><p>What is survival analysis?</p></li>
+<li><p>Visualizing Kaplan-Meier</p></li>
+<li><p>Visualizing Competing Risks</p></li>
+<li><p>Advanced Topics in {ggsurvfit}</p>
+<ul>
+<li>Combining figures</li>
+<li>How Risk Tables are constructed</li>
+<li>CDISC Helpers</li>
+</ul></li>
+</ol>
+</section>
+<section id="survival-analysis" class="slide level2">
+<h2>Survival Analysis</h2>
+<p>This is the briefest overview. For more details, review the resources below.</p>
+<div class="small">
+<blockquote>
+<p>Clark, T., Bradburn, M., Love, S., &amp; Altman, D. (2003). <em>Survival analysis part I: Basic concepts and first analyses</em>. 232-238. ISSN 0007-0920.</p>
+</blockquote>
+<blockquote>
+<p>M J Bradburn, T G Clark, S B Love, &amp; D G Altman. (2003). _Survival Analysis Part II: Multivariate data analysis – an introduction to concepts and methods. British Journal of Cancer, 89(3), 431-436.</p>
+</blockquote>
+<blockquote>
+<p>Bradburn, M., Clark, T., Love, S., &amp; Altman, D. (2003). Survival analysis Part III: Multivariate data analysis – choosing a model and assessing its adequacy and fit_. 89(4), 605-11.</p>
+</blockquote>
+<blockquote>
+<p>Clark, T., Bradburn, M., Love, S., &amp; Altman, D. (2003). <em>Survival analysis part IV: Further concepts and methods in survival analysis</em>. 781-786. ISSN 0007-0920.</p>
+</blockquote>
+</div>
+</section>
+<section id="survival-analysis-1" class="slide level2">
+<h2>Survival Analysis</h2>
+<blockquote>
+<p>Survival times are data that measure follow-up time from a defined starting point to the occurrence of a given event, for example the time from the beginning to the end of a remission period or the time from the diagnosis of a disease to death. Standard statistical techniques cannot usually be applied because the data are often ‘censored’. A survival time is described as censored when there is a follow-up time but the event has not yet occurred.</p>
+</blockquote>
+<p>Bewick V, Cheek L, Ball J. <em>Statistics review 12: survival analysis</em>. Crit Care. 2004 Oct;8(5):389-94.</p>
+<aside class="notes">
+<p>Read this aloud, then rephrase and give examples</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="survival-analysis-2" class="slide level2">
+<h2>Survival Analysis</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Because survival data are common in many fields, it also goes by other names.</p>
+<p><strong>Other Names</strong></p>
+<ul>
+<li><p>Reliability analysis</p></li>
+<li><p>Duration analysis</p></li>
+<li><p>Event history analysis</p></li>
+<li><p>Time-to-event analysis</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Examples</strong></p>
+<ul>
+<li><p>Time from surgery to death</p></li>
+<li><p>Time from start of treatment to progression</p></li>
+<li><p>Time from HIV infection to development of AIDS</p></li>
+<li><p>Time to heart attack</p></li>
+<li><p>Time to onset of substance abuse</p></li>
+<li><p>Time to initiation of sexual activity</p></li>
+<li><p>Time to machine malfunction</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="survival-analysis-no-censoring" class="slide level2">
+<h2>Survival Analysis, No Censoring</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" width="576"></p>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<ul>
+<li><p>The skulls are the time when each of these patients die</p></li>
+<li><p>We observe the follow-up in the solid line</p></li>
+<li><p>How can we summarize the time from treatment to death?</p></li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>We can use a simple mean, median, etc.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="survival-analysis-censoring" class="slide level2">
+<h2>Survival Analysis, Censoring</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" width="576"></p>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<ul>
+<li><p>The skulls are the time when each of these patients die</p></li>
+<li><p>We observe the follow-up in the solid line</p></li>
+<li><p>The dashed line in <strong>unobserved</strong></p></li>
+<li><p>How can we summarize the average time from treatment to death?</p></li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<p>Censoring occurs if a subject has not experienced the event of interest by the end of data collection.</p>
+<p>A subject may be censored due to:</p>
+<ul>
+<li><p>Loss to follow-up</p></li>
+<li><p>Withdrawal from study</p></li>
+<li><p>No event by end of fixed study period</p></li>
+</ul>
+<p>When censoring is present, the analytic method MUST take this into account.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="survival-analysis-methods" class="slide level2">
+<h2>Survival Analysis Methods</h2>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="yyichzgjis" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#yyichzgjis table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#yyichzgjis thead, #yyichzgjis tbody, #yyichzgjis tfoot, #yyichzgjis tr, #yyichzgjis td, #yyichzgjis th {
+  border-style: none;
+}
+
+#yyichzgjis p {
+  margin: 0;
+  padding: 0;
+}
+
+#yyichzgjis .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 34px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#yyichzgjis .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#yyichzgjis .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#yyichzgjis .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#yyichzgjis .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#yyichzgjis .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#yyichzgjis .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#yyichzgjis .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#yyichzgjis .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#yyichzgjis .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#yyichzgjis .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#yyichzgjis .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#yyichzgjis .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#yyichzgjis .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#yyichzgjis .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyichzgjis .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#yyichzgjis .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#yyichzgjis .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#yyichzgjis .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyichzgjis .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#yyichzgjis .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyichzgjis .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#yyichzgjis .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyichzgjis .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yyichzgjis .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yyichzgjis .gt_left {
+  text-align: left;
+}
+
+#yyichzgjis .gt_center {
+  text-align: center;
+}
+
+#yyichzgjis .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#yyichzgjis .gt_font_normal {
+  font-weight: normal;
+}
+
+#yyichzgjis .gt_font_bold {
+  font-weight: bold;
+}
+
+#yyichzgjis .gt_font_italic {
+  font-style: italic;
+}
+
+#yyichzgjis .gt_super {
+  font-size: 65%;
+}
+
+#yyichzgjis .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#yyichzgjis .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#yyichzgjis .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#yyichzgjis .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#yyichzgjis .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#yyichzgjis .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#yyichzgjis .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Standard Method</strong>"><strong>Standard Method</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Survival Method</strong><span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>"><strong>Survival Method</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="method" class="gt_row gt_left">Means/Median/Percentiles</td>
+<td headers="survival_method" class="gt_row gt_left">Kaplan-Meier Estimator</td></tr>
+    <tr><td headers="method" class="gt_row gt_left">t-test/Rank-sum Test</td>
+<td headers="survival_method" class="gt_row gt_left">Log-rank Test</td></tr>
+    <tr><td headers="method" class="gt_row gt_left">Linear/Logistic Regression</td>
+<td headers="survival_method" class="gt_row gt_left">Cox Proportional Hazards Regression<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>2</sup></span></td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="2"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> There are multiple methods available tailored to specific cases and these are the most common.</td>
+    </tr>
+    <tr>
+      <td class="gt_footnote" colspan="2"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>2</sup></span> We will not be covering regression methods today.</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>We’ll primarily be covering Kaplan-Meier methods today.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-ggsurvfit" class="slide level2">
+<h2>Why {ggsurvfit} ?</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"></section>
+<section id="why-ggsurvfit-1" class="slide level2">
+<h2>Why {ggsurvfit} ?</h2>
+<ul>
+<li><p>Use ggplot2 functions</p>
+<ul>
+<li>Each <code>ggsurvfit</code> function is written as a proper <code>ggplot2</code> geom</li>
+<li>Package functions woven with ggplot2 functions seamlessly</li>
+<li>Don’t need to learn to style with <code>ggsurvfit</code> functions</li>
+<li>Use your ggplot2 knowledge if you want to customize</li>
+</ul></li>
+<li><p>Limitless customization</p>
+<ul>
+<li>Modify x-axis scales or any other plot feature and risk table will still align with plot</li>
+</ul></li>
+<li><p>Simple saving and export through <code>ggplot2::ggsave()</code></p></li>
+<li><p>Ready to publish legends; raw variable names do not appear in the figure</p></li>
+</ul>
+</section>
+<section id="data" class="slide level2">
+<h2>Data</h2>
+<p>The following examples use a labeled version of the <code>survival::colon</code> data set.</p>
+</section>
+<section id="data-1" class="slide level2">
+<h2>Data</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(ggsurvfit)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(gtsummary)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>df_colon <span class="ot">&lt;-</span> df_colon <span class="sc">|&gt;</span> <span class="fu">select</span>(time, status, surg)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>df_colon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 929 × 3
+    time status surg                       
+   &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;                      
+ 1 2.65       1 Limited Time Since Surgery 
+ 2 8.45       0 Limited Time Since Surgery 
+ 3 1.48       1 Limited Time Since Surgery 
+ 4 0.671      1 Extended Time Since Surgery
+ 5 1.43       1 Extended Time Since Surgery
+ 6 2.48       1 Limited Time Since Surgery 
+ 7 0.627      1 Extended Time Since Surgery
+ 8 8.74       0 Limited Time Since Surgery 
+ 9 8.69       0 Limited Time Since Surgery 
+10 9.06       0 Extended Time Since Surgery
+# ℹ 919 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="data-2" class="slide level2">
+<h2>Data</h2>
+<div class="cell" data-freeze="false">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>df_colon <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">tbl_summary</span>(<span class="at">statistic =</span> status <span class="sc">~</span> <span class="st">"{n} / {N}"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">add_stat_label</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="fu">bold_labels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="mgiijwuguf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mgiijwuguf table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#mgiijwuguf thead, #mgiijwuguf tbody, #mgiijwuguf tfoot, #mgiijwuguf tr, #mgiijwuguf td, #mgiijwuguf th {
+  border-style: none;
+}
+
+#mgiijwuguf p {
+  margin: 0;
+  padding: 0;
+}
+
+#mgiijwuguf .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 22px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#mgiijwuguf .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#mgiijwuguf .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#mgiijwuguf .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#mgiijwuguf .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#mgiijwuguf .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#mgiijwuguf .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#mgiijwuguf .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#mgiijwuguf .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#mgiijwuguf .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#mgiijwuguf .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#mgiijwuguf .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#mgiijwuguf .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#mgiijwuguf .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#mgiijwuguf .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mgiijwuguf .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#mgiijwuguf .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#mgiijwuguf .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#mgiijwuguf .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mgiijwuguf .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#mgiijwuguf .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mgiijwuguf .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#mgiijwuguf .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mgiijwuguf .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#mgiijwuguf .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mgiijwuguf .gt_left {
+  text-align: left;
+}
+
+#mgiijwuguf .gt_center {
+  text-align: center;
+}
+
+#mgiijwuguf .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#mgiijwuguf .gt_font_normal {
+  font-weight: normal;
+}
+
+#mgiijwuguf .gt_font_bold {
+  font-weight: bold;
+}
+
+#mgiijwuguf .gt_font_italic {
+  font-style: italic;
+}
+
+#mgiijwuguf .gt_super {
+  font-size: 65%;
+}
+
+#mgiijwuguf .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#mgiijwuguf .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#mgiijwuguf .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#mgiijwuguf .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#mgiijwuguf .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#mgiijwuguf .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#mgiijwuguf .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Characteristic</strong>"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>N = 929</strong>"><strong>N = 929</strong></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Follow-up time, years, Median (IQR)</td>
+<td headers="stat_0" class="gt_row gt_center">4.24 (1.01, 6.27)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Recurrence Status, n / N</td>
+<td headers="stat_0" class="gt_row gt_center">468 / 929</td></tr>
+    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">Time from Surgery to Treatment, n (%)</td>
+<td headers="stat_0" class="gt_row gt_center"><br></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Limited Time Since Surgery</td>
+<td headers="stat_0" class="gt_row gt_center">682 (73%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;Extended Time Since Surgery</td>
+<td headers="stat_0" class="gt_row gt_center">247 (27%)</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
 </section>
 <section id="kaplan-meier-basics" class="slide level2">
 <h2>Kaplan-Meier Basics</h2>
@@ -418,8 +1606,8 @@ Daniel D. Sjoberg
 <li><p>They look the same, right?</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>sf1 <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">survfit</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>sf1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>sf1 <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">survfit</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon)</span>
+<span id="cb4-2"><a href="#cb4-2"></a>sf1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call: survfit(formula = Surv(time, status) ~ surg, data = df_colon)
 
@@ -429,8 +1617,8 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>sf2 <span class="ot">&lt;-</span> ggsurvfit<span class="sc">::</span><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon)</span>
-<span id="cb3-2"><a href="#cb3-2"></a>sf2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>sf2 <span class="ot">&lt;-</span> ggsurvfit<span class="sc">::</span><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon)</span>
+<span id="cb6-2"><a href="#cb6-2"></a>sf2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call: survfit(formula = Surv(time, status) ~ surg, data = df_colon)
 
@@ -452,7 +1640,7 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 </ul>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>waldo<span class="sc">::</span><span class="fu">compare</span>(sf1, sf2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>waldo<span class="sc">::</span><span class="fu">compare</span>(sf1, sf2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>`old` is length 17
 `new` is length 18
@@ -473,11 +1661,11 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <div class="columns">
 <div class="column" style="width:80%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">add_risktable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">add_risktable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
 </div>
 </div>
 </div><div class="column" style="width:20%;">
@@ -502,19 +1690,19 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 </div>
 </div>
 </div>
-</section>
+</section></section>
 <section id="basic-example-1" class="title-slide slide level1 center">
 <h1>Basic Example</h1>
 <div class="columns">
 <div class="column" style="width:80%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8" data-code-line-numbers="4-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11" data-code-line-numbers="4-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
 </div>
 </div>
 </div><div class="column" style="width:20%;">
@@ -536,14 +1724,14 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <div class="columns">
 <div class="column" style="width:80%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9" data-code-line-numbers="6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>) <span class="sc">+</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a>  ggeasy<span class="sc">::</span><span class="fu">easy_move_legend</span>(<span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12" data-code-line-numbers="6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a>  ggeasy<span class="sc">::</span><span class="fu">easy_move_legend</span>(<span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.png" width="960"></p>
 </div>
 </div>
 </div><div class="column" style="width:20%;">
@@ -557,13 +1745,831 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 </div>
 </div>
 </div>
-<!-- {{< include ggsurvfit-examples.qmd >}} -->
-<!-- {{< include KMunicate.qmd >}} -->
-<!-- {{< include 03-cdisc.qmd >}} -->
-<!-- {{< include conclusion.qmd >}} -->
+</section>
 
-<p><img src="images/ggsurvfit-logo.png" class="slide-logo"></p>
-<div class="footer footer-default">
+<section id="additional-examples" class="title-slide slide level1 center">
+<h1>Additional examples</h1>
+
+</section>
+
+<section>
+<section id="default-and-styled-modifications-with-ggplot2" class="title-slide slide level1 center">
+<h1>Default and styled modifications with ggplot2</h1>
+
+</section>
+<section id="ggsurvfit-defaults" class="slide level2">
+<h2>{ggsurvfit} defaults</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>gg_default <span class="ot">&lt;-</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a>  <span class="fu">ggsurvfit</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Default"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6"></a></span>
+<span id="cb13-7"><a href="#cb13-7"></a>gg_default</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section>
+<section id="ggplot2-styled" class="slide level2">
+<h2>{ggplot2} styled</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" data-code-line-numbers="|2|3|4-8|9|10-11|12-13|14|15-18|"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>gg_styled <span class="ot">&lt;-</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>  gg_default <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">8</span>)) <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb14-5"><a href="#cb14-5"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb14-6"><a href="#cb14-6"></a>    <span class="at">labels =</span> scales<span class="sc">::</span>percent, </span>
+<span id="cb14-7"><a href="#cb14-7"></a>    <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="dv">0</span>)</span>
+<span id="cb14-8"><a href="#cb14-8"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>, <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">ncol =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a>  <span class="fu">labs</span>(</span>
+<span id="cb14-16"><a href="#cb14-16"></a>    <span class="at">title =</span> <span class="st">"{ggplot2} styled"</span>,</span>
+<span id="cb14-17"><a href="#cb14-17"></a>    <span class="at">y =</span> <span class="st">"Percentage Survival"</span></span>
+<span id="cb14-18"><a href="#cb14-18"></a>  )</span>
+<span id="cb14-19"><a href="#cb14-19"></a></span>
+<span id="cb14-20"><a href="#cb14-20"></a>gg_styled</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section><section id="ggplot2-styled-output" class="slide level2 output-location-slide"><h2>{ggplot2} styled</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
+</div>
+</div></section></section>
+<section>
+<section id="risk-tables" class="title-slide slide level1 center">
+<h1>Risk tables</h1>
+
+</section>
+<section id="ggsurvfit-defaults-1" class="slide level2">
+<h2>{ggsurvfit} defaults</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a>  <span class="fu">add_risktable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"></section>
+<section id="group-by-statistic-or-strata" class="slide level2">
+<h2>Group by statistic or strata</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>ggrisktable <span class="ot">&lt;-</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_group =</span> <span class="st">"risktable_stats"</span>) </span>
+<span id="cb16-6"><a href="#cb16-6"></a>ggrisktable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.png" width="960" class="r-stretch"></section>
+<section id="color-encoding-strata" class="slide level2">
+<h2>Color encoding strata</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>ggrisktable <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">add_risktable_strata_symbol</span>(<span class="at">symbol =</span> <span class="st">"\U25CF"</span>, <span class="at">size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-22-1.png" width="960" class="r-stretch"></section>
+<section id="customizing-the-risktable-statistics" class="slide level2">
+<h2>Customizing the risktable statistics</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="st">"{n.risk} ({cum.event})"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.png" width="960" class="r-stretch"></section></section>
+<section>
+<section id="quantiles" class="title-slide slide level1 center">
+<h1>Quantiles</h1>
+
+</section>
+<section id="median-summary" class="slide level2">
+<h2>Median summary</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">add_censor_mark</span>() <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">add_quantile</span>(<span class="at">y_value =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch"></section>
+<section id="at-a-given-timepoint" class="slide level2">
+<h2>At a given timepoint</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">add_censor_mark</span>() <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">add_quantile</span>(<span class="at">x_value =</span> <span class="dv">5</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">linewidth =</span> <span class="fl">1.0</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch"></section>
+<section id="underyling-ggsurvfit-functions" class="slide level2">
+<h2>Underyling {ggsurvfit} functions</h2>
+<p>In addition to using additional {ggplot2} functions, it is helpful to understand which underlying functions are used to create the figures.</p>
+<p>Additional arguments can be passed to the underlying functions.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="pqvrqbdmev" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#pqvrqbdmev table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#pqvrqbdmev thead, #pqvrqbdmev tbody, #pqvrqbdmev tfoot, #pqvrqbdmev tr, #pqvrqbdmev td, #pqvrqbdmev th {
+  border-style: none;
+}
+
+#pqvrqbdmev p {
+  margin: 0;
+  padding: 0;
+}
+
+#pqvrqbdmev .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#pqvrqbdmev .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#pqvrqbdmev .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#pqvrqbdmev .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#pqvrqbdmev .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#pqvrqbdmev .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#pqvrqbdmev .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#pqvrqbdmev .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#pqvrqbdmev .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#pqvrqbdmev .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#pqvrqbdmev .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pqvrqbdmev .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#pqvrqbdmev .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#pqvrqbdmev .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#pqvrqbdmev .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pqvrqbdmev .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#pqvrqbdmev .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#pqvrqbdmev .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#pqvrqbdmev .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pqvrqbdmev .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#pqvrqbdmev .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pqvrqbdmev .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#pqvrqbdmev .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pqvrqbdmev .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pqvrqbdmev .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pqvrqbdmev .gt_left {
+  text-align: left;
+}
+
+#pqvrqbdmev .gt_center {
+  text-align: center;
+}
+
+#pqvrqbdmev .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#pqvrqbdmev .gt_font_normal {
+  font-weight: normal;
+}
+
+#pqvrqbdmev .gt_font_bold {
+  font-weight: bold;
+}
+
+#pqvrqbdmev .gt_font_italic {
+  font-style: italic;
+}
+
+#pqvrqbdmev .gt_super {
+  font-size: 65%;
+}
+
+#pqvrqbdmev .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#pqvrqbdmev .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#pqvrqbdmev .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#pqvrqbdmev .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#pqvrqbdmev .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#pqvrqbdmev .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#pqvrqbdmev .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="{ggsurvfit}">{ggsurvfit}</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Underlying {ggplot2}">Underlying {ggplot2}</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="ggsurvfit" class="gt_row gt_left"><div data-qmd="`ggsurvfit(...)`"><div class="gt_from_md"><p><code>ggsurvfit(...)</code></p>
+</div></div></td>
+<td headers="underlying" class="gt_row gt_left"><div data-qmd="`geom_step(...)`"><div class="gt_from_md"><p><code>geom_step(...)</code></p>
+</div></div></td></tr>
+    <tr><td headers="ggsurvfit" class="gt_row gt_left"><div data-qmd="`add_confidence_interval(...)`"><div class="gt_from_md"><p><code>add_confidence_interval(...)</code></p>
+</div></div></td>
+<td headers="underlying" class="gt_row gt_left"><div data-qmd="`geom_ribbon(...)`"><div class="gt_from_md"><p><code>geom_ribbon(...)</code></p>
+</div></div></td></tr>
+    <tr><td headers="ggsurvfit" class="gt_row gt_left"><div data-qmd="`add_censor_mark(...)`"><div class="gt_from_md"><p><code>add_censor_mark(...)</code></p>
+</div></div></td>
+<td headers="underlying" class="gt_row gt_left"><div data-qmd="`geom_point(...)`"><div class="gt_from_md"><p><code>geom_point(...)</code></p>
+</div></div></td></tr>
+    <tr><td headers="ggsurvfit" class="gt_row gt_left"><div data-qmd="`add_quantile(...)`"><div class="gt_from_md"><p><code>add_quantile(...)</code></p>
+</div></div></td>
+<td headers="underlying" class="gt_row gt_left"><div data-qmd="`geom_segment(...)`"><div class="gt_from_md"><p><code>geom_segment(...)</code></p>
+</div></div></td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" data-code-line-numbers="|4|5-7|8-9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>p <span class="ot">&lt;-</span> </span>
+<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb21-3"><a href="#cb21-3"></a>           <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
+<span id="cb21-4"><a href="#cb21-4"></a>  <span class="fu">ggsurvfit</span>(<span class="at">color =</span> <span class="st">"#508050"</span>) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a>  <span class="fu">add_confidence_interval</span>(</span>
+<span id="cb21-6"><a href="#cb21-6"></a>    <span class="at">fill =</span> <span class="st">"#508050"</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8"></a>  <span class="fu">add_censor_mark</span>(<span class="at">color =</span> <span class="st">"#508050"</span>, </span>
+<span id="cb21-9"><a href="#cb21-9"></a>                  <span class="at">alpha =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-28-1.png" width="960"></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="further-risktable-customization" class="slide level2">
+<h2>Further Risktable Customization</h2>
+<ul>
+<li><p>Here, we customize the risktable portion of the plot.</p></li>
+<li><p>We can style the plot area by passing ggplot2 functions to <code>add_risktable(theme)</code> argument.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">add_risktable</span>(</span>
+<span id="cb22-4"><a href="#cb22-4"></a>    <span class="at">risktable_height =</span> <span class="fl">0.33</span>,</span>
+<span id="cb22-5"><a href="#cb22-5"></a>    <span class="at">size =</span> <span class="dv">4</span>, <span class="co"># increase font size of risk table statistics</span></span>
+<span id="cb22-6"><a href="#cb22-6"></a>    <span class="at">theme =</span>   <span class="co"># increase font size of risk table title and y-axis label</span></span>
+<span id="cb22-7"><a href="#cb22-7"></a>      <span class="fu">list</span>(</span>
+<span id="cb22-8"><a href="#cb22-8"></a>        <span class="fu">theme_risktable_default</span>(<span class="at">axis.text.y.size =</span> <span class="dv">11</span>, </span>
+<span id="cb22-9"><a href="#cb22-9"></a>                                <span class="at">plot.title.size =</span> <span class="dv">11</span>),</span>
+<span id="cb22-10"><a href="#cb22-10"></a>        <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>))</span>
+<span id="cb22-11"><a href="#cb22-11"></a>      )</span>
+<span id="cb22-12"><a href="#cb22-12"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section><section id="further-risktable-customization-output" class="slide level2 output-location-slide"><h2>Further Risktable Customization</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-29-1.png" width="960"></p>
+</div>
+</div></section></section>
+<section id="another-example" class="title-slide slide level1 center">
+<h1>Another Example</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" data-code-line-numbers="|2|3|4-5|6|7|8|10-12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">type =</span> <span class="st">"risk"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="st">"n.risk"</span>) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5"></a>  <span class="fu">add_risktable_strata_symbol</span>(<span class="at">symbol =</span> <span class="st">"\U25CF"</span>, <span class="at">size =</span> <span class="dv">17</span>) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6"></a>  <span class="fu">add_quantile</span>(<span class="at">x_value =</span> <span class="dv">5</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7"></a>  <span class="fu">add_censor_mark</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8"></a>  <span class="fu">add_pvalue</span>(<span class="at">caption =</span> <span class="st">"Log-rank {p.value}"</span>) <span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb23-10"><a href="#cb23-10"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
+<span id="cb23-11"><a href="#cb23-11"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
+<span id="cb23-12"><a href="#cb23-12"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Risk of Recurrence"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section>
+
+<section id="another-example-output" class="title-slide slide level1 output-location-slide center"><h1>Another Example</h1><div class="cell output-location-slide">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-30-1.png" width="960"></p>
+</div>
+</div></section><section>
+<section id="kmunicate-and-themes" class="title-slide slide level1 center">
+<h1>KMunicate and themes</h1>
+
+</section>
+<section id="what-are-the-elements-of-an-effective-and-publishable-km-plot" class="slide level2">
+<h2>What are the elements of an effective and publishable KM plot?</h2>
+<p>There are many options to consider and many guidances available:</p>
+<div class="small">
+<ul>
+<li><p><a href="https://bmjopen.bmj.com/content/9/9/e030215">Morris et al.&nbsp;2018</a> provide useful guidance for publication figures</p></li>
+<li><p>To get figures that align with <strong>KMunicate</strong> use the <code>theme_ggsurvfit_KMunicate()</code> theme along with these function options.</p></li>
+</ul>
+</div>
+<p>A note of caution on standards:</p>
+<div class="small">
+<ul>
+<li><p>Design for your purpose, one size does not fit all</p></li>
+<li><p>Designing means you need to think carefully about your <a href="http://graphicsprinciples.github.io/">audience and aims</a></p></li>
+</ul>
+</div>
+<!-- ![](images/KMunicate.jpg){width="50%"} -->
+</section>
+<section id="kmunicate" class="slide level2">
+<h2>KMunicate</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linetype_aes =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="fu">c</span>(<span class="st">"n.risk"</span>, <span class="st">"cum.censor"</span>, <span class="st">"cum.event"</span>)) <span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5"></a>  <span class="fu">theme_ggsurvfit_KMunicate</span>() <span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.85</span>, <span class="fl">0.85</span>)) <span class="sc">+</span></span>
+<span id="cb24-8"><a href="#cb24-8"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section>
+<section id="kmunicate-output" class="slide level2 output-location-slide"><h2>KMunicate</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-32-1.png" width="960"></p>
+</div>
+</div></section><section id="cdisc-adam-adtte" class="slide level2">
+<h2>CDISC ADaM ADTTE</h2>
+<p>Gems for those using the <strong>CDISC ADaM ADTTE</strong> model.</p>
+<ul>
+<li>The outcome is coded in the <strong>OPPOSITE</strong> way we expect!😱😱
+<ul>
+<li>The <code>Surv_CNSR()</code> function handles the transformation for us</li>
+<li><code>survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)</code></li>
+<li>This function can be used <strong>anywhere</strong>: use it! Don’t screw it up!</li>
+</ul></li>
+<li>The “PARAM” value is used to construct enhanced labels in the figure.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>adtte <span class="sc">|&gt;</span> <span class="fu">select</span>(PARAM, AVAL, CNSR, TRT01P) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  PARAM                              AVAL  CNSR TRT01P                          
+  &lt;chr&gt;                             &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                           
+1 Progression-free survival (years) 0.824     0 vismab x 52 weeks               
+2 Progression-free survival (years) 3.03      1 tablemab x 12 week -&gt; vismab 34…
+3 Progression-free survival (years) 2.32      0 tablemab + vismab 52 weeks      </code></pre>
+</div>
+</div>
+</section>
+<section id="cdisc-adam-adtte-1" class="slide level2">
+<h2>CDISC ADaM ADTTE</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv_CNSR</span>() <span class="sc">~</span> TRT01P, adtte) <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb27-3"><a href="#cb27-3"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="st">"n.risk"</span>) <span class="sc">+</span></span>
+<span id="cb27-5"><a href="#cb27-5"></a>  <span class="fu">add_risktable_strata_symbol</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-35-1.png" width="960" class="r-stretch"></section>
+<section id="competing-risks" class="slide level2">
+<h2>Competing Risks</h2>
+<ul>
+<li><p>There is another <em>flavor</em> of survival data referred to as competing risks data.</p></li>
+<li><p>The most common type of a competing risk is an event that drives the probability of observing our event of interest to zero.</p></li>
+<li><p>For example, if we are interested in model the time from a treatment to a disease’s return or recurrence…what do we do if a patient passes away from an unrelated cause?</p></li>
+<li><p>In this case, death from other causes is a competing event.</p></li>
+<li><p>The {ggsurvfit} package plays nicely with the {tidycmprsk} package for competing risks analysis.</p></li>
+</ul>
+<aside class="notes">
+<p>Well that sounds confusing!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="competing-risks-1" class="slide level2">
+<h2>Competing Risks</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>tidycmprsk<span class="sc">::</span><span class="fu">cuminc</span>(<span class="fu">Surv</span>(ttdeath, death_cr) <span class="sc">~</span> trt, tidycmprsk<span class="sc">::</span>trial) <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2"></a>  <span class="fu">ggcuminc</span>(<span class="at">outcome =</span> <span class="st">"death from cancer"</span>) <span class="sc">+</span></span>
+<span id="cb28-3"><a href="#cb28-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb28-5"><a href="#cb28-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-37-1.png" width="960" class="r-stretch"></section>
+<section id="side-by-side" class="slide level2">
+<h2>Side-by-Side</h2>
+<ul>
+<li><p>You’ll often need to place two or more figures side-by-side</p></li>
+<li><p>My favorite package to do this is {patchwork}</p></li>
+<li><p>But before you can use {patchwork} with {ggsurvfit}, you need to understand a bit about how these figures are constructed</p>
+<ul>
+<li><p>The risktables are only added to the figure <strong>during printing</strong> by calling the <code>ggsurvfit_build()</code> function</p></li>
+<li><p>This means that you <strong>must build the plot</strong> before you can cobble figures together</p></li>
+</ul></li>
+<li><p>I have an open issue in {patchwork} to add a feature so we can avoid this extra step</p></li>
+</ul>
+</section>
+<section id="side-by-side-1" class="slide level2">
+<h2>Side-by-Side</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>p <span class="ot">&lt;-</span> <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, df_colon) <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span>
+<span id="cb29-6"><a href="#cb29-6"></a></span>
+<span id="cb29-7"><a href="#cb29-7"></a><span class="co"># build plot (which constructs the risktable)</span></span>
+<span id="cb29-8"><a href="#cb29-8"></a>built_p <span class="ot">&lt;-</span> <span class="fu">ggsurvfit_build</span>(p) <span class="sc">|&gt;</span> patchwork<span class="sc">::</span><span class="fu">wrap_plots</span>()</span>
+<span id="cb29-9"><a href="#cb29-9"></a></span>
+<span id="cb29-10"><a href="#cb29-10"></a>built_p <span class="sc">|</span> built_p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-39-1.png" width="960" class="r-stretch"></section></section>
+<section id="ggsurvfit-wrap-up" class="title-slide slide level1 center">
+<h1>{ggsurvfit} wrap up</h1>
+<ul>
+<li><p>Ease the creation of time-to-event summary figures with ggplot2</p></li>
+<li><p>Concise and modular code</p></li>
+<li><p>Ready for publication or sharing figures</p></li>
+<li><p>Sensible defaults</p></li>
+<li><p>Also supports competing risks cumulative incidence summaries</p></li>
+</ul>
+
+
+<img src="images/ggsurvfit-logo.png" class="slide-logo r-stretch"><div class="footer footer-default">
 <p><a href="https://danieldsjoberg.com/ggsurvfit-rmed-webinar-2024">{ggsurvfit} R Package</a></p>
 </div>
 </section>

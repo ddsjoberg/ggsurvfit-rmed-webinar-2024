@@ -14,6 +14,104 @@
     "text": "🗓 January 25, 2024 | Time 4:00PM PST, 7:00PM EST\n\n💥 Register for link to join the webinar\n\n\nAbstract\nThe {ggsurvfit} package eases the creation of time-to-event or survival analysis summary figures with {ggplot2}, such as a Kaplan-Meier plot. The concise and modular code creates figures ready for publication. Each {ggsurvfit} function (e.g. add_confidence_interval(), add_risktable(), etc.) is written as a proper {ggplot2} ‘geom’, meaning the package functions can be woven with {ggplot2} functions. The implication is that you do not need to learn new functions to style the plot: rather, you may rely on the suite of {ggplot2} functions you already know.\nLastly, the package includes gems for those using the CDISC ADaM ADTTE data model. The “PARAM” value is used to construct enhanced labels in the figure. The event indicator, “CNSR”, is coded in the opposite way the {survival} package expects. This difference creates an opportunity for errors to be silently introduced in an analysis. The {ggsurvfit} package exports a function called Surv_CNSR() to resolve this concern by creating a survival object that uses ADTTE coding conventions as the default. The function can be used in {ggsurvfit} as well as any other package with a survival endpoint.\nInstall {ggsurvfit} from CRAN with\ninstall.packages('ggsurvfit')\n\n\nAuthor\n\nDaniel D. Sjoberg (he/him) is a Senior Principal Data Scientist at Genentech. Previously, he was a Lead Data Science Manager at the Prostate Cancer Clinical Trials Consortium, and a Senior Biostatistician at Memorial Sloan Kettering Cancer Center in New York City. He enjoys R package development, creating many packages available on CRAN, R-Universe, and GitHub. His research interests include adaptive methods in clinical trials, precision medicine, and predictive modeling. Daniel is the winner of the 2021 American Statistical Association (ASA) Innovation in Statistical Programming and Analytics award."
   },
   {
+    "objectID": "slides/index.html#licensing",
+    "href": "slides/index.html#licensing",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Licensing",
+    "text": "Licensing\n\nThis work is licensed under Creative Commons Zero v1.0 Universal."
+  },
+  {
+    "objectID": "slides/index.html#authors",
+    "href": "slides/index.html#authors",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Authors",
+    "text": "Authors\n\n\n\nDaniel D. Sjoberg\n \n\n\n\n\nSenior Principal Data Scientist at Genentech.\nPreviously, a Lead Data Science Manager at the Prostate Cancer Clinical Trials Consortium, and a Senior Biostatistician at Memorial Sloan Kettering Cancer Center in New York City.\nHe enjoys R package development, creating many packages available on CRAN, R-Universe, and GitHub.\nWinner of the 2021 American Statistical Association (ASA) Innovation in Statistical Programming and Analytics award."
+  },
+  {
+    "objectID": "slides/index.html#outline",
+    "href": "slides/index.html#outline",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Outline",
+    "text": "Outline\n\nWhat is survival analysis?\nVisualizing Kaplan-Meier\nVisualizing Competing Risks\nAdvanced Topics in {ggsurvfit}\n\nCombining figures\nHow Risk Tables are constructed\nCDISC Helpers"
+  },
+  {
+    "objectID": "slides/index.html#survival-analysis",
+    "href": "slides/index.html#survival-analysis",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Survival Analysis",
+    "text": "Survival Analysis\nThis is the briefest overview. For more details, review the resources below.\n\n\nClark, T., Bradburn, M., Love, S., & Altman, D. (2003). Survival analysis part I: Basic concepts and first analyses. 232-238. ISSN 0007-0920.\n\n\nM J Bradburn, T G Clark, S B Love, & D G Altman. (2003). _Survival Analysis Part II: Multivariate data analysis – an introduction to concepts and methods. British Journal of Cancer, 89(3), 431-436.\n\n\nBradburn, M., Clark, T., Love, S., & Altman, D. (2003). Survival analysis Part III: Multivariate data analysis – choosing a model and assessing its adequacy and fit_. 89(4), 605-11.\n\n\nClark, T., Bradburn, M., Love, S., & Altman, D. (2003). Survival analysis part IV: Further concepts and methods in survival analysis. 781-786. ISSN 0007-0920."
+  },
+  {
+    "objectID": "slides/index.html#survival-analysis-1",
+    "href": "slides/index.html#survival-analysis-1",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Survival Analysis",
+    "text": "Survival Analysis\n\nSurvival times are data that measure follow-up time from a defined starting point to the occurrence of a given event, for example the time from the beginning to the end of a remission period or the time from the diagnosis of a disease to death. Standard statistical techniques cannot usually be applied because the data are often ‘censored’. A survival time is described as censored when there is a follow-up time but the event has not yet occurred.\n\nBewick V, Cheek L, Ball J. Statistics review 12: survival analysis. Crit Care. 2004 Oct;8(5):389-94.\n\nRead this aloud, then rephrase and give examples"
+  },
+  {
+    "objectID": "slides/index.html#survival-analysis-2",
+    "href": "slides/index.html#survival-analysis-2",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Survival Analysis",
+    "text": "Survival Analysis\n\n\nBecause survival data are common in many fields, it also goes by other names.\nOther Names\n\nReliability analysis\nDuration analysis\nEvent history analysis\nTime-to-event analysis\n\n\nExamples\n\nTime from surgery to death\nTime from start of treatment to progression\nTime from HIV infection to development of AIDS\nTime to heart attack\nTime to onset of substance abuse\nTime to initiation of sexual activity\nTime to machine malfunction"
+  },
+  {
+    "objectID": "slides/index.html#survival-analysis-no-censoring",
+    "href": "slides/index.html#survival-analysis-no-censoring",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Survival Analysis, No Censoring",
+    "text": "Survival Analysis, No Censoring\n\n\n\n\n\n\n\n\n\nThe skulls are the time when each of these patients die\nWe observe the follow-up in the solid line\nHow can we summarize the time from treatment to death?\n\n\n\n\n\nWe can use a simple mean, median, etc."
+  },
+  {
+    "objectID": "slides/index.html#survival-analysis-censoring",
+    "href": "slides/index.html#survival-analysis-censoring",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Survival Analysis, Censoring",
+    "text": "Survival Analysis, Censoring\n\n\n\n\n\n\n\n\n\nThe skulls are the time when each of these patients die\nWe observe the follow-up in the solid line\nThe dashed line in unobserved\nHow can we summarize the average time from treatment to death?\n\n\n\n\nCensoring occurs if a subject has not experienced the event of interest by the end of data collection.\nA subject may be censored due to:\n\nLoss to follow-up\nWithdrawal from study\nNo event by end of fixed study period\n\nWhen censoring is present, the analytic method MUST take this into account."
+  },
+  {
+    "objectID": "slides/index.html#survival-analysis-methods",
+    "href": "slides/index.html#survival-analysis-methods",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Survival Analysis Methods",
+    "text": "Survival Analysis Methods\n\n\n\n\n\n\n  \n    \n      Standard Method\n      Survival Method1\n    \n  \n  \n    Means/Median/Percentiles\nKaplan-Meier Estimator\n    t-test/Rank-sum Test\nLog-rank Test\n    Linear/Logistic Regression\nCox Proportional Hazards Regression2\n  \n  \n  \n    \n      1 There are multiple methods available tailored to specific cases and these are the most common.\n    \n    \n      2 We will not be covering regression methods today.\n    \n  \n\n\n\n\n\nWe’ll primarily be covering Kaplan-Meier methods today."
+  },
+  {
+    "objectID": "slides/index.html#why-ggsurvfit",
+    "href": "slides/index.html#why-ggsurvfit",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Why {ggsurvfit} ?",
+    "text": "Why {ggsurvfit} ?"
+  },
+  {
+    "objectID": "slides/index.html#why-ggsurvfit-1",
+    "href": "slides/index.html#why-ggsurvfit-1",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Why {ggsurvfit} ?",
+    "text": "Why {ggsurvfit} ?\n\nUse ggplot2 functions\n\nEach ggsurvfit function is written as a proper ggplot2 geom\nPackage functions woven with ggplot2 functions seamlessly\nDon’t need to learn to style with ggsurvfit functions\nUse your ggplot2 knowledge if you want to customize\n\nLimitless customization\n\nModify x-axis scales or any other plot feature and risk table will still align with plot\n\nSimple saving and export through ggplot2::ggsave()\nReady to publish legends; raw variable names do not appear in the figure"
+  },
+  {
+    "objectID": "slides/index.html#data",
+    "href": "slides/index.html#data",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Data",
+    "text": "Data\nThe following examples use a labeled version of the survival::colon data set."
+  },
+  {
+    "objectID": "slides/index.html#data-1",
+    "href": "slides/index.html#data-1",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Data",
+    "text": "Data\n\nlibrary(ggsurvfit)\nlibrary(gtsummary)\nlibrary(tidyverse)\n\ndf_colon &lt;- df_colon |&gt; select(time, status, surg)\ndf_colon\n\n# A tibble: 929 × 3\n    time status surg                       \n   &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;                      \n 1 2.65       1 Limited Time Since Surgery \n 2 8.45       0 Limited Time Since Surgery \n 3 1.48       1 Limited Time Since Surgery \n 4 0.671      1 Extended Time Since Surgery\n 5 1.43       1 Extended Time Since Surgery\n 6 2.48       1 Limited Time Since Surgery \n 7 0.627      1 Extended Time Since Surgery\n 8 8.74       0 Limited Time Since Surgery \n 9 8.69       0 Limited Time Since Surgery \n10 9.06       0 Extended Time Since Surgery\n# ℹ 919 more rows"
+  },
+  {
+    "objectID": "slides/index.html#data-2",
+    "href": "slides/index.html#data-2",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Data",
+    "text": "Data\n\ndf_colon |&gt; \n  tbl_summary(statistic = status ~ \"{n} / {N}\") |&gt; \n  add_stat_label() |&gt; \n  bold_labels()\n\n\n\n\n\n  \n    \n      Characteristic\n      N = 929\n    \n  \n  \n    Follow-up time, years, Median (IQR)\n4.24 (1.01, 6.27)\n    Recurrence Status, n / N\n468 / 929\n    Time from Surgery to Treatment, n (%)\n\n        Limited Time Since Surgery\n682 (73%)\n        Extended Time Since Surgery\n247 (27%)"
+  },
+  {
     "objectID": "slides/index.html#kaplan-meier-basics",
     "href": "slides/index.html#kaplan-meier-basics",
     "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
@@ -33,5 +131,152 @@
     "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
     "section": "Basic Example",
     "text": "Basic Example\n\n\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt; \n  ggsurvfit() +\n  add_risktable()\n\n\n\n\n\n\n\n\nThe Good\n\nSimple code and figure is nearly publishable\nRisk table with both no. at risk and events easily added\nx-axis label taken from the time column label\nCan use ggplot2 + notation\n\nThe Could-Be-Better\n\ny-axis label is incorrect, and the range of axis is best at 0-100%\nAxis padding a bit more than I prefer for a KM figure\nx-axis typically has more tick marks for KM figure"
+  },
+  {
+    "objectID": "slides/index.html#ggsurvfit-defaults",
+    "href": "slides/index.html#ggsurvfit-defaults",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "{ggsurvfit} defaults",
+    "text": "{ggsurvfit} defaults\n\ngg_default &lt;-\n  survfit2(Surv(time, status) ~ surg, data = df_colon) |&gt;\n  ggsurvfit(size = 1) +\n  add_confidence_interval() +\n  labs(title = \"Default\")\n\ngg_default"
+  },
+  {
+    "objectID": "slides/index.html#ggplot2-styled",
+    "href": "slides/index.html#ggplot2-styled",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "{ggplot2} styled",
+    "text": "{ggplot2} styled\n\ngg_styled &lt;-\n  gg_default +\n  coord_cartesian(xlim = c(0, 8)) +\n  scale_y_continuous(\n    limits = c(0, 1),\n    labels = scales::percent, \n    expand = c(0.01, 0)\n  ) +\n  scale_x_continuous(breaks = 0:9, expand = c(0.02, 0)) +\n  scale_color_manual(values = c('#54738E', '#82AC7C')) +\n  scale_fill_manual(values = c('#54738E', '#82AC7C')) +\n  theme_minimal() +\n  theme(legend.position = \"bottom\") +\n  guides(color = guide_legend(ncol = 1)) +\n  labs(\n    title = \"{ggplot2} styled\",\n    y = \"Percentage Survival\"\n  )\n\ngg_styled"
+  },
+  {
+    "objectID": "slides/index.html#ggplot2-styled-output",
+    "href": "slides/index.html#ggplot2-styled-output",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "{ggplot2} styled",
+    "text": "{ggplot2} styled"
+  },
+  {
+    "objectID": "slides/index.html#ggsurvfit-defaults-1",
+    "href": "slides/index.html#ggsurvfit-defaults-1",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "{ggsurvfit} defaults",
+    "text": "{ggsurvfit} defaults\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt;\n  ggsurvfit(size = 1) +\n  add_risktable()"
+  },
+  {
+    "objectID": "slides/index.html#group-by-statistic-or-strata",
+    "href": "slides/index.html#group-by-statistic-or-strata",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Group by statistic or strata",
+    "text": "Group by statistic or strata\n\nggrisktable &lt;-\n  survfit2(Surv(time, status) ~ surg, data = df_colon) |&gt;\n  ggsurvfit() +\n  scale_ggsurvfit() +\n  add_risktable(risktable_group = \"risktable_stats\") \nggrisktable"
+  },
+  {
+    "objectID": "slides/index.html#color-encoding-strata",
+    "href": "slides/index.html#color-encoding-strata",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Color encoding strata",
+    "text": "Color encoding strata\n\nggrisktable +\n  add_risktable_strata_symbol(symbol = \"\\U25CF\", size = 12)"
+  },
+  {
+    "objectID": "slides/index.html#customizing-the-risktable-statistics",
+    "href": "slides/index.html#customizing-the-risktable-statistics",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Customizing the risktable statistics",
+    "text": "Customizing the risktable statistics\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt;\n  ggsurvfit() +\n  add_risktable(risktable_stats = \"{n.risk} ({cum.event})\")"
+  },
+  {
+    "objectID": "slides/index.html#median-summary",
+    "href": "slides/index.html#median-summary",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Median summary",
+    "text": "Median summary\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt;\n  ggsurvfit(linewidth = 0.8) +\n  add_censor_mark() +\n  add_quantile(y_value = 0.5) +\n  scale_ggsurvfit()"
+  },
+  {
+    "objectID": "slides/index.html#at-a-given-timepoint",
+    "href": "slides/index.html#at-a-given-timepoint",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "At a given timepoint",
+    "text": "At a given timepoint\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt;\n  ggsurvfit(linewidth = 0.8) +\n  add_censor_mark() +\n  add_quantile(x_value = 5, linetype = \"solid\", linewidth = 1.0, alpha = 0.3) +\n  scale_ggsurvfit()"
+  },
+  {
+    "objectID": "slides/index.html#underyling-ggsurvfit-functions",
+    "href": "slides/index.html#underyling-ggsurvfit-functions",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Underyling {ggsurvfit} functions",
+    "text": "Underyling {ggsurvfit} functions\nIn addition to using additional {ggplot2} functions, it is helpful to understand which underlying functions are used to create the figures.\nAdditional arguments can be passed to the underlying functions.\n\n\n\n\n\n\n\n\n  \n    \n      {ggsurvfit}\n      Underlying {ggplot2}\n    \n  \n  \n    ggsurvfit(...)\n\ngeom_step(...)\n\n    add_confidence_interval(...)\n\ngeom_ribbon(...)\n\n    add_censor_mark(...)\n\ngeom_point(...)\n\n    add_quantile(...)\n\ngeom_segment(...)\n\n  \n  \n  \n\n\n\n\n\np &lt;- \n  survfit2(Surv(time, status) ~ 1, \n           data = df_colon) |&gt; \n  ggsurvfit(color = \"#508050\") +\n  add_confidence_interval(\n    fill = \"#508050\"\n  ) +\n  add_censor_mark(color = \"#508050\", \n                  alpha = 100)"
+  },
+  {
+    "objectID": "slides/index.html#further-risktable-customization",
+    "href": "slides/index.html#further-risktable-customization",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Further Risktable Customization",
+    "text": "Further Risktable Customization\n\nHere, we customize the risktable portion of the plot.\nWe can style the plot area by passing ggplot2 functions to add_risktable(theme) argument.\n\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) %&gt;%\n  ggsurvfit(linewidth = 1) +\n  add_risktable(\n    risktable_height = 0.33,\n    size = 4, # increase font size of risk table statistics\n    theme =   # increase font size of risk table title and y-axis label\n      list(\n        theme_risktable_default(axis.text.y.size = 11, \n                                plot.title.size = 11),\n        theme(plot.title = element_text(face = \"bold\"))\n      )\n  )"
+  },
+  {
+    "objectID": "slides/index.html#further-risktable-customization-output",
+    "href": "slides/index.html#further-risktable-customization-output",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Further Risktable Customization",
+    "text": "Further Risktable Customization"
+  },
+  {
+    "objectID": "slides/index.html#what-are-the-elements-of-an-effective-and-publishable-km-plot",
+    "href": "slides/index.html#what-are-the-elements-of-an-effective-and-publishable-km-plot",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "What are the elements of an effective and publishable KM plot?",
+    "text": "What are the elements of an effective and publishable KM plot?\nThere are many options to consider and many guidances available:\n\n\nMorris et al. 2018 provide useful guidance for publication figures\nTo get figures that align with KMunicate use the theme_ggsurvfit_KMunicate() theme along with these function options.\n\n\nA note of caution on standards:\n\n\nDesign for your purpose, one size does not fit all\nDesigning means you need to think carefully about your audience and aims"
+  },
+  {
+    "objectID": "slides/index.html#kmunicate",
+    "href": "slides/index.html#kmunicate",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "KMunicate",
+    "text": "KMunicate\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt;\n  ggsurvfit(linetype_aes = TRUE) +\n  add_confidence_interval() +\n  add_risktable(risktable_stats = c(\"n.risk\", \"cum.censor\", \"cum.event\")) +\n  theme_ggsurvfit_KMunicate() +\n  scale_ggsurvfit() +\n  theme(legend.position = c(0.85, 0.85)) +\n  labs(y = \"Recurrence-free Progression\")"
+  },
+  {
+    "objectID": "slides/index.html#kmunicate-output",
+    "href": "slides/index.html#kmunicate-output",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "KMunicate",
+    "text": "KMunicate"
+  },
+  {
+    "objectID": "slides/index.html#cdisc-adam-adtte",
+    "href": "slides/index.html#cdisc-adam-adtte",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "CDISC ADaM ADTTE",
+    "text": "CDISC ADaM ADTTE\nGems for those using the CDISC ADaM ADTTE model.\n\nThe outcome is coded in the OPPOSITE way we expect!😱😱\n\nThe Surv_CNSR() function handles the transformation for us\nsurvival::Surv(time = AVAL, event = 1 - CNSR, type = \"right\", origin = 0)\nThis function can be used anywhere: use it! Don’t screw it up!\n\nThe “PARAM” value is used to construct enhanced labels in the figure.\n\n\nadtte |&gt; select(PARAM, AVAL, CNSR, TRT01P) |&gt; head(3)\n\n# A tibble: 3 × 4\n  PARAM                              AVAL  CNSR TRT01P                          \n  &lt;chr&gt;                             &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                           \n1 Progression-free survival (years) 0.824     0 vismab x 52 weeks               \n2 Progression-free survival (years) 3.03      1 tablemab x 12 week -&gt; vismab 34…\n3 Progression-free survival (years) 2.32      0 tablemab + vismab 52 weeks"
+  },
+  {
+    "objectID": "slides/index.html#cdisc-adam-adtte-1",
+    "href": "slides/index.html#cdisc-adam-adtte-1",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "CDISC ADaM ADTTE",
+    "text": "CDISC ADaM ADTTE\n\nsurvfit2(Surv_CNSR() ~ TRT01P, adtte) |&gt; \n  ggsurvfit(size = 1) + \n  scale_ggsurvfit() +\n  add_risktable(risktable_stats = \"n.risk\") +\n  add_risktable_strata_symbol()"
+  },
+  {
+    "objectID": "slides/index.html#competing-risks",
+    "href": "slides/index.html#competing-risks",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Competing Risks",
+    "text": "Competing Risks\n\nThere is another flavor of survival data referred to as competing risks data.\nThe most common type of a competing risk is an event that drives the probability of observing our event of interest to zero.\nFor example, if we are interested in model the time from a treatment to a disease’s return or recurrence…what do we do if a patient passes away from an unrelated cause?\nIn this case, death from other causes is a competing event.\nThe {ggsurvfit} package plays nicely with the {tidycmprsk} package for competing risks analysis.\n\n\nWell that sounds confusing!"
+  },
+  {
+    "objectID": "slides/index.html#competing-risks-1",
+    "href": "slides/index.html#competing-risks-1",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Competing Risks",
+    "text": "Competing Risks\n\ntidycmprsk::cuminc(Surv(ttdeath, death_cr) ~ trt, tidycmprsk::trial) %&gt;%\n  ggcuminc(outcome = \"death from cancer\") +\n  add_confidence_interval() +\n  add_risktable() +\n  scale_ggsurvfit()"
+  },
+  {
+    "objectID": "slides/index.html#side-by-side",
+    "href": "slides/index.html#side-by-side",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Side-by-Side",
+    "text": "Side-by-Side\n\nYou’ll often need to place two or more figures side-by-side\nMy favorite package to do this is {patchwork}\nBut before you can use {patchwork} with {ggsurvfit}, you need to understand a bit about how these figures are constructed\n\nThe risktables are only added to the figure during printing by calling the ggsurvfit_build() function\nThis means that you must build the plot before you can cobble figures together\n\nI have an open issue in {patchwork} to add a feature so we can avoid this extra step"
+  },
+  {
+    "objectID": "slides/index.html#side-by-side-1",
+    "href": "slides/index.html#side-by-side-1",
+    "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
+    "section": "Side-by-Side",
+    "text": "Side-by-Side\n\np &lt;- survfit2(Surv(time, status) ~ 1, df_colon) %&gt;%\n  ggsurvfit() +\n  add_confidence_interval() +\n  add_risktable() +\n  scale_ggsurvfit()\n\n# build plot (which constructs the risktable)\nbuilt_p &lt;- ggsurvfit_build(p) |&gt; patchwork::wrap_plots()\n\nbuilt_p | built_p"
   }
 ]
