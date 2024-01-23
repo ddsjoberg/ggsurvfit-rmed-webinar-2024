@@ -49,7 +49,7 @@ library(ggsurvfit)
 
 ```{r}
 survfit2(Surv(time, status) ~ surg, data = df_colon) |> 
-  ggsurvfit() +
+  ggsurvfit(linewidth = 1) +
   add_risktable()
 ```
 
@@ -82,7 +82,7 @@ survfit2(Surv(time, status) ~ surg, data = df_colon) |>
 ```{r}
 #| code-line-numbers: "4-5"
 survfit2(Surv(time, status) ~ surg, data = df_colon) |> 
-  ggsurvfit() +
+  ggsurvfit(linewidth = 1) +
   add_risktable() +
   scale_ggsurvfit() +
   labs(y = "Recurrence-free Progression")
@@ -112,7 +112,7 @@ survfit2(Surv(time, status) ~ surg, data = df_colon) |>
 ```{r}
 #| code-line-numbers: "6"
 survfit2(Surv(time, status) ~ surg, data = df_colon) |> 
-  ggsurvfit() +
+  ggsurvfit(linewidth = 1) +
   add_risktable() +
   scale_ggsurvfit() +
   labs(y = "Recurrence-free Progression") +
@@ -138,6 +138,7 @@ survfit2(Surv(time, status) ~ surg, data = df_colon) |>
 ## Basic Example, transformation
 
 ```{r}
+#| code-line-numbers: "2"
 survfit2(Surv(time, status) ~ surg, data = df_colon) |> 
   ggsurvfit(type = "risk", linewidth = 1) +
   add_risktable() +
