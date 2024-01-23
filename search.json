@@ -130,21 +130,21 @@
     "href": "slides/index.html#basic-example",
     "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
     "section": "Basic Example",
-    "text": "Basic Example\n\n\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt; \n  ggsurvfit() +\n  add_risktable()\n\n\n\n\n\n\n\n\nThe Good\n\nSimple code and figure is nearly publishable\nRisk table with both no. at risk and events easily added\nx-axis label taken from the time column label\nCan use ggplot2 + notation\n\nThe Could-Be-Better\n\ny-axis label is incorrect, and the range of axis is best at 0-100%\nAxis padding a bit more than I prefer for a KM figure\nx-axis typically has more tick marks for KM figure"
+    "text": "Basic Example\n\n\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt; \n  ggsurvfit(linewidth = 1) +\n  add_risktable()\n\n\n\n\n\n\n\n\nThe Good\n\nSimple code and figure is nearly publishable\nRisk table with both no. at risk and events easily added\nx-axis label taken from the time column label\nCan use ggplot2 + notation\n\nThe Could-Be-Better\n\ny-axis label is incorrect, and the range of axis is best at 0-100%\nAxis padding a bit more than I prefer for a KM figure\nx-axis typically has more tick marks for KM figure"
   },
   {
     "objectID": "slides/index.html#basic-example-1",
     "href": "slides/index.html#basic-example-1",
     "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
     "section": "Basic Example",
-    "text": "Basic Example\n\n\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt; \n  ggsurvfit() +\n  add_risktable() +\n  scale_ggsurvfit() +\n  labs(y = \"Recurrence-free Progression\")\n\n\n\n\n\n\n\n\nPadding has been reduced and curves begin in the upper left corner of plot\nx-axis reports additional time points (and as a result, the risk table as well)\nWe updated the y-axis label weaving standard ggplot2 functions"
+    "text": "Basic Example\n\n\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt; \n  ggsurvfit(linewidth = 1) +\n  add_risktable() +\n  scale_ggsurvfit() +\n  labs(y = \"Recurrence-free Progression\")\n\n\n\n\n\n\n\n\nPadding has been reduced and curves begin in the upper left corner of plot\nx-axis reports additional time points (and as a result, the risk table as well)\nWe updated the y-axis label weaving standard ggplot2 functions"
   },
   {
     "objectID": "slides/index.html#basic-example-2",
     "href": "slides/index.html#basic-example-2",
     "title": "Visualizing Survival Data with the {ggsurvfit} R Package",
     "section": "Basic Example",
-    "text": "Basic Example\n\n\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt; \n  ggsurvfit() +\n  add_risktable() +\n  scale_ggsurvfit() +\n  labs(y = \"Recurrence-free Progression\") +\n  ggeasy::easy_move_legend(\"top\")\n\n\n\n\n\n\n\nPadding has been reduced and curves begin in the upper left corner of plot\nx-axis reports additional time points (and as a result, the risk table as well)\nWe updated the y-axis label weaving standard ggplot2 functions\nWe can even use ggplot2-extender functions"
+    "text": "Basic Example\n\n\n\nsurvfit2(Surv(time, status) ~ surg, data = df_colon) |&gt; \n  ggsurvfit(linewidth = 1) +\n  add_risktable() +\n  scale_ggsurvfit() +\n  labs(y = \"Recurrence-free Progression\") +\n  ggeasy::easy_move_legend(\"top\")\n\n\n\n\n\n\n\nPadding has been reduced and curves begin in the upper left corner of plot\nx-axis reports additional time points (and as a result, the risk table as well)\nWe updated the y-axis label weaving standard ggplot2 functions\nWe can even use ggplot2-extender functions"
   },
   {
     "objectID": "slides/index.html#basic-example-transformation",
