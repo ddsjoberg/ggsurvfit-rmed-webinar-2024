@@ -1690,9 +1690,9 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 </div>
 </div>
 </div>
-</section></section>
-<section id="basic-example-1" class="title-slide slide level1 center">
-<h1>Basic Example</h1>
+</section>
+<section id="basic-example-1" class="slide level2">
+<h2>Basic Example</h2>
 <div class="columns">
 <div class="column" style="width:80%;">
 <div class="cell">
@@ -1718,9 +1718,8 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 </div>
 </div>
 </section>
-
-<section id="basic-example-2" class="title-slide slide level1 center">
-<h1>Basic Example</h1>
+<section id="basic-example-2" class="slide level2">
+<h2>Basic Example</h2>
 <div class="columns">
 <div class="column" style="width:80%;">
 <div class="cell">
@@ -1746,7 +1745,47 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 </div>
 </div>
 </section>
+<section id="basic-example-transformation" class="slide level2">
+<h2>Basic Example, transformation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">type =</span> <span class="st">"risk"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch"></section>
+<section id="basic-example-3" class="slide level2">
+<h2>Basic Example</h2>
+<ul>
+<li>What is <code>scale_ggsurvfit()</code>?</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="dv">0</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">label =</span> scales<span class="sc">::</span><span class="fu">label_percent</span>())</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.015</span>, <span class="dv">0</span>), <span class="at">n.breaks =</span> <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><p>If you use this function, you <strong>must include all scale specifications</strong> that would appear in <code>scale_x_continuous()</code> or <code>scale_y_continuous()</code></p></li>
+<li><p>Do not call <code>scale_x_continuous()</code> or <code>scale_y_continuous()</code> along with <code>scale_ggsurvfit()</code>: scales are not additive, rather they replace existing scales.</p></li>
+<li><p>For example, it’s common you’ll need to specify the x-axis break points. <code>scale_ggsurvfit(x_scales=list(breaks=0:9))</code></p></li>
+</ul>
+<aside class="notes">
+<ul>
+<li><p>You’ll see that I am using <code>scale_ggsurvfit()</code> pretty often throughout the presentation.</p></li>
+<li><p>This is the value for survival figures.</p></li>
+<li><p>The scales are modified depending on what type of curve is being presented.</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
 <section id="additional-examples" class="title-slide slide level1 center">
 <h1>Additional examples</h1>
 
@@ -1760,44 +1799,44 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <section id="ggsurvfit-defaults" class="slide level2">
 <h2>{ggsurvfit} defaults</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>gg_default <span class="ot">&lt;-</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
-<span id="cb13-3"><a href="#cb13-3"></a>  <span class="fu">ggsurvfit</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
-<span id="cb13-5"><a href="#cb13-5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Default"</span>)</span>
-<span id="cb13-6"><a href="#cb13-6"></a></span>
-<span id="cb13-7"><a href="#cb13-7"></a>gg_default</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>gg_default <span class="ot">&lt;-</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a>  <span class="fu">ggsurvfit</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Default"</span>)</span>
+<span id="cb15-6"><a href="#cb15-6"></a></span>
+<span id="cb15-7"><a href="#cb15-7"></a>gg_default</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch"></section>
 <section id="ggplot2-styled" class="slide level2">
 <h2>{ggplot2} styled</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14" data-code-line-numbers="|2|3|4-8|9|10-11|12-13|14|15-18|"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>gg_styled <span class="ot">&lt;-</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a>  gg_default <span class="sc">+</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">8</span>)) <span class="sc">+</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a>  <span class="fu">scale_y_continuous</span>(</span>
-<span id="cb14-5"><a href="#cb14-5"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
-<span id="cb14-6"><a href="#cb14-6"></a>    <span class="at">labels =</span> scales<span class="sc">::</span>percent, </span>
-<span id="cb14-7"><a href="#cb14-7"></a>    <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="dv">0</span>)</span>
-<span id="cb14-8"><a href="#cb14-8"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-9"><a href="#cb14-9"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>, <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
-<span id="cb14-10"><a href="#cb14-10"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
-<span id="cb14-11"><a href="#cb14-11"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
-<span id="cb14-12"><a href="#cb14-12"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb14-13"><a href="#cb14-13"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb14-14"><a href="#cb14-14"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">ncol =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb14-15"><a href="#cb14-15"></a>  <span class="fu">labs</span>(</span>
-<span id="cb14-16"><a href="#cb14-16"></a>    <span class="at">title =</span> <span class="st">"{ggplot2} styled"</span>,</span>
-<span id="cb14-17"><a href="#cb14-17"></a>    <span class="at">y =</span> <span class="st">"Percentage Survival"</span></span>
-<span id="cb14-18"><a href="#cb14-18"></a>  )</span>
-<span id="cb14-19"><a href="#cb14-19"></a></span>
-<span id="cb14-20"><a href="#cb14-20"></a>gg_styled</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16" data-code-line-numbers="|2|3|4-8|9|10-11|12-13|14|15-18|"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>gg_styled <span class="ot">&lt;-</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>  gg_default <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">8</span>)) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb16-5"><a href="#cb16-5"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb16-6"><a href="#cb16-6"></a>    <span class="at">labels =</span> scales<span class="sc">::</span>percent, </span>
+<span id="cb16-7"><a href="#cb16-7"></a>    <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="dv">0</span>)</span>
+<span id="cb16-8"><a href="#cb16-8"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>, <span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">ncol =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a>  <span class="fu">labs</span>(</span>
+<span id="cb16-16"><a href="#cb16-16"></a>    <span class="at">title =</span> <span class="st">"{ggplot2} styled"</span>,</span>
+<span id="cb16-17"><a href="#cb16-17"></a>    <span class="at">y =</span> <span class="st">"Percentage Survival"</span></span>
+<span id="cb16-18"><a href="#cb16-18"></a>  )</span>
+<span id="cb16-19"><a href="#cb16-19"></a></span>
+<span id="cb16-20"><a href="#cb16-20"></a>gg_styled</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 </section><section id="ggplot2-styled-output" class="slide level2 output-location-slide"><h2>{ggplot2} styled</h2><div class="cell output-location-slide">
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
 </div>
 </div></section></section>
 <section>
@@ -1808,41 +1847,41 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <section id="ggsurvfit-defaults-1" class="slide level2">
 <h2>{ggsurvfit} defaults</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb15-3"><a href="#cb15-3"></a>  <span class="fu">add_risktable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"></section>
-<section id="group-by-statistic-or-strata" class="slide level2">
-<h2>Group by statistic or strata</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>ggrisktable <span class="ot">&lt;-</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
-<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb16-5"><a href="#cb16-5"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_group =</span> <span class="st">"risktable_stats"</span>) </span>
-<span id="cb16-6"><a href="#cb16-6"></a>ggrisktable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">add_risktable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.png" width="960" class="r-stretch"></section>
-<section id="color-encoding-strata" class="slide level2">
-<h2>Color encoding strata</h2>
+<section id="group-by-statistic-or-strata" class="slide level2">
+<h2>Group by statistic or strata</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>ggrisktable <span class="sc">+</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">add_risktable_strata_symbol</span>(<span class="at">symbol =</span> <span class="st">"\U25CF"</span>, <span class="at">size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>ggrisktable <span class="ot">&lt;-</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_group =</span> <span class="st">"risktable_stats"</span>) </span>
+<span id="cb18-6"><a href="#cb18-6"></a>ggrisktable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="index_files/figure-revealjs/unnamed-chunk-22-1.png" width="960" class="r-stretch"></section>
+<section id="color-encoding-strata" class="slide level2">
+<h2>Color encoding strata</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>ggrisktable <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">add_risktable_strata_symbol</span>(<span class="at">symbol =</span> <span class="st">"\U25CF"</span>, <span class="at">size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.png" width="960" class="r-stretch"></section>
 <section id="customizing-the-risktable-statistics" class="slide level2">
 <h2>Customizing the risktable statistics</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="st">"{n.risk} ({cum.event})"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="st">"{n.risk} ({cum.event})"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.png" width="960" class="r-stretch"></section></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch"></section></section>
 <section>
 <section id="quantiles" class="title-slide slide level1 center">
 <h1>Quantiles</h1>
@@ -1851,25 +1890,25 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <section id="median-summary" class="slide level2">
 <h2>Median summary</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
-<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">add_censor_mark</span>() <span class="sc">+</span></span>
-<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">add_quantile</span>(<span class="at">y_value =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch"></section>
-<section id="at-a-given-timepoint" class="slide level2">
-<h2>At a given timepoint</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
-<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">add_censor_mark</span>() <span class="sc">+</span></span>
-<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">add_quantile</span>(<span class="at">x_value =</span> <span class="dv">5</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">linewidth =</span> <span class="fl">1.0</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a>  <span class="fu">add_censor_mark</span>() <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a>  <span class="fu">add_quantile</span>(<span class="at">y_value =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="index_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch"></section>
+<section id="at-a-given-timepoint" class="slide level2">
+<h2>At a given timepoint</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">add_censor_mark</span>() <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">add_quantile</span>(<span class="at">x_value =</span> <span class="dv">5</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">linewidth =</span> <span class="fl">1.0</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-26-1.png" width="960" class="r-stretch"></section>
 <section id="underyling-ggsurvfit-functions" class="slide level2">
 <h2>Underyling {ggsurvfit} functions</h2>
 <p>In addition to using additional {ggplot2} functions, it is helpful to understand which underlying functions are used to create the figures.</p>
@@ -2351,20 +2390,20 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21" data-code-line-numbers="|4|5-7|8-9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>p <span class="ot">&lt;-</span> </span>
-<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, </span>
-<span id="cb21-3"><a href="#cb21-3"></a>           <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
-<span id="cb21-4"><a href="#cb21-4"></a>  <span class="fu">ggsurvfit</span>(<span class="at">color =</span> <span class="st">"#508050"</span>) <span class="sc">+</span></span>
-<span id="cb21-5"><a href="#cb21-5"></a>  <span class="fu">add_confidence_interval</span>(</span>
-<span id="cb21-6"><a href="#cb21-6"></a>    <span class="at">fill =</span> <span class="st">"#508050"</span></span>
-<span id="cb21-7"><a href="#cb21-7"></a>  ) <span class="sc">+</span></span>
-<span id="cb21-8"><a href="#cb21-8"></a>  <span class="fu">add_censor_mark</span>(<span class="at">color =</span> <span class="st">"#508050"</span>, </span>
-<span id="cb21-9"><a href="#cb21-9"></a>                  <span class="at">alpha =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23" data-code-line-numbers="|4|5-7|8-9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>p <span class="ot">&lt;-</span> </span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb23-3"><a href="#cb23-3"></a>           <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span> </span>
+<span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">ggsurvfit</span>(<span class="at">color =</span> <span class="st">"#508050"</span>) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5"></a>  <span class="fu">add_confidence_interval</span>(</span>
+<span id="cb23-6"><a href="#cb23-6"></a>    <span class="at">fill =</span> <span class="st">"#508050"</span></span>
+<span id="cb23-7"><a href="#cb23-7"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8"></a>  <span class="fu">add_censor_mark</span>(<span class="at">color =</span> <span class="st">"#508050"</span>, </span>
+<span id="cb23-9"><a href="#cb23-9"></a>                  <span class="at">alpha =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-28-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-29-1.png" width="960"></p>
 </div>
 </div>
 </div>
@@ -2377,47 +2416,47 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <li><p>We can style the plot area by passing ggplot2 functions to <code>add_risktable(theme)</code> argument.</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">%&gt;%</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">add_risktable</span>(</span>
-<span id="cb22-4"><a href="#cb22-4"></a>    <span class="at">risktable_height =</span> <span class="fl">0.33</span>,</span>
-<span id="cb22-5"><a href="#cb22-5"></a>    <span class="at">size =</span> <span class="dv">4</span>, <span class="co"># increase font size of risk table statistics</span></span>
-<span id="cb22-6"><a href="#cb22-6"></a>    <span class="at">theme =</span>   <span class="co"># increase font size of risk table title and y-axis label</span></span>
-<span id="cb22-7"><a href="#cb22-7"></a>      <span class="fu">list</span>(</span>
-<span id="cb22-8"><a href="#cb22-8"></a>        <span class="fu">theme_risktable_default</span>(<span class="at">axis.text.y.size =</span> <span class="dv">11</span>, </span>
-<span id="cb22-9"><a href="#cb22-9"></a>                                <span class="at">plot.title.size =</span> <span class="dv">11</span>),</span>
-<span id="cb22-10"><a href="#cb22-10"></a>        <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>))</span>
-<span id="cb22-11"><a href="#cb22-11"></a>      )</span>
-<span id="cb22-12"><a href="#cb22-12"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">add_risktable</span>(</span>
+<span id="cb24-4"><a href="#cb24-4"></a>    <span class="at">risktable_height =</span> <span class="fl">0.33</span>,</span>
+<span id="cb24-5"><a href="#cb24-5"></a>    <span class="at">size =</span> <span class="dv">4</span>, <span class="co"># increase font size of risk table statistics</span></span>
+<span id="cb24-6"><a href="#cb24-6"></a>    <span class="at">theme =</span>   <span class="co"># increase font size of risk table title and y-axis label</span></span>
+<span id="cb24-7"><a href="#cb24-7"></a>      <span class="fu">list</span>(</span>
+<span id="cb24-8"><a href="#cb24-8"></a>        <span class="fu">theme_risktable_default</span>(<span class="at">axis.text.y.size =</span> <span class="dv">11</span>, </span>
+<span id="cb24-9"><a href="#cb24-9"></a>                                <span class="at">plot.title.size =</span> <span class="dv">11</span>),</span>
+<span id="cb24-10"><a href="#cb24-10"></a>        <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>))</span>
+<span id="cb24-11"><a href="#cb24-11"></a>      )</span>
+<span id="cb24-12"><a href="#cb24-12"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 </section><section id="further-risktable-customization-output" class="slide level2 output-location-slide"><h2>Further Risktable Customization</h2><div class="cell output-location-slide">
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-29-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-30-1.png" width="960"></p>
 </div>
 </div></section></section>
 <section id="another-example" class="title-slide slide level1 center">
 <h1>Another Example</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23" data-code-line-numbers="|2|3|4-5|6|7|8|10-12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
-<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">type =</span> <span class="st">"risk"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
-<span id="cb23-3"><a href="#cb23-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
-<span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="st">"n.risk"</span>) <span class="sc">+</span></span>
-<span id="cb23-5"><a href="#cb23-5"></a>  <span class="fu">add_risktable_strata_symbol</span>(<span class="at">symbol =</span> <span class="st">"\U25CF"</span>, <span class="at">size =</span> <span class="dv">17</span>) <span class="sc">+</span></span>
-<span id="cb23-6"><a href="#cb23-6"></a>  <span class="fu">add_quantile</span>(<span class="at">x_value =</span> <span class="dv">5</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb23-7"><a href="#cb23-7"></a>  <span class="fu">add_censor_mark</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb23-8"><a href="#cb23-8"></a>  <span class="fu">add_pvalue</span>(<span class="at">caption =</span> <span class="st">"Log-rank {p.value}"</span>) <span class="sc">+</span></span>
-<span id="cb23-9"><a href="#cb23-9"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb23-10"><a href="#cb23-10"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
-<span id="cb23-11"><a href="#cb23-11"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
-<span id="cb23-12"><a href="#cb23-12"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Risk of Recurrence"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25" data-code-line-numbers="|2|3|4-5|6|7|8|10-12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">type =</span> <span class="st">"risk"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb25-4"><a href="#cb25-4"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="st">"n.risk"</span>) <span class="sc">+</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a>  <span class="fu">add_risktable_strata_symbol</span>(<span class="at">symbol =</span> <span class="st">"\U25CF"</span>, <span class="at">size =</span> <span class="dv">17</span>) <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a>  <span class="fu">add_quantile</span>(<span class="at">x_value =</span> <span class="dv">5</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb25-7"><a href="#cb25-7"></a>  <span class="fu">add_censor_mark</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb25-8"><a href="#cb25-8"></a>  <span class="fu">add_pvalue</span>(<span class="at">caption =</span> <span class="st">"Log-rank {p.value}"</span>) <span class="sc">+</span></span>
+<span id="cb25-9"><a href="#cb25-9"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb25-10"><a href="#cb25-10"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
+<span id="cb25-11"><a href="#cb25-11"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">'#54738E'</span>, <span class="st">'#82AC7C'</span>)) <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Risk of Recurrence"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 </section>
 
 <section id="another-example-output" class="title-slide slide level1 output-location-slide center"><h1>Another Example</h1><div class="cell output-location-slide">
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-30-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-31-1.png" width="960"></p>
 </div>
 </div></section><section>
 <section id="kmunicate-and-themes" class="title-slide slide level1 center">
@@ -2445,20 +2484,20 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <section id="kmunicate" class="slide level2">
 <h2>KMunicate</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
-<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linetype_aes =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
-<span id="cb24-4"><a href="#cb24-4"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="fu">c</span>(<span class="st">"n.risk"</span>, <span class="st">"cum.censor"</span>, <span class="st">"cum.event"</span>)) <span class="sc">+</span></span>
-<span id="cb24-5"><a href="#cb24-5"></a>  <span class="fu">theme_ggsurvfit_KMunicate</span>() <span class="sc">+</span></span>
-<span id="cb24-6"><a href="#cb24-6"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb24-7"><a href="#cb24-7"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.85</span>, <span class="fl">0.85</span>)) <span class="sc">+</span></span>
-<span id="cb24-8"><a href="#cb24-8"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> surg, <span class="at">data =</span> df_colon) <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">linetype_aes =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="fu">c</span>(<span class="st">"n.risk"</span>, <span class="st">"cum.censor"</span>, <span class="st">"cum.event"</span>)) <span class="sc">+</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a>  <span class="fu">theme_ggsurvfit_KMunicate</span>() <span class="sc">+</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb26-7"><a href="#cb26-7"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.85</span>, <span class="fl">0.85</span>)) <span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Recurrence-free Progression"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 </section>
 <section id="kmunicate-output" class="slide level2 output-location-slide"><h2>KMunicate</h2><div class="cell output-location-slide">
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-32-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-33-1.png" width="960"></p>
 </div>
 </div></section><section id="cdisc-adam-adtte" class="slide level2">
 <h2>CDISC ADaM ADTTE</h2>
@@ -2473,7 +2512,7 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <li>The “PARAM” value is used to construct enhanced labels in the figure.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>adtte <span class="sc">|&gt;</span> <span class="fu">select</span>(PARAM, AVAL, CNSR, TRT01P) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>adtte <span class="sc">|&gt;</span> <span class="fu">select</span>(PARAM, AVAL, CNSR, TRT01P) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 4
   PARAM                              AVAL  CNSR TRT01P                          
@@ -2487,14 +2526,14 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <section id="cdisc-adam-adtte-1" class="slide level2">
 <h2>CDISC ADaM ADTTE</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv_CNSR</span>() <span class="sc">~</span> TRT01P, adtte) <span class="sc">|&gt;</span> </span>
-<span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb27-3"><a href="#cb27-3"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb27-4"><a href="#cb27-4"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="st">"n.risk"</span>) <span class="sc">+</span></span>
-<span id="cb27-5"><a href="#cb27-5"></a>  <span class="fu">add_risktable_strata_symbol</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv_CNSR</span>() <span class="sc">~</span> TRT01P, adtte) <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a href="#cb29-2"></a>  <span class="fu">ggsurvfit</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb29-3"><a href="#cb29-3"></a>  <span class="fu">scale_ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4"></a>  <span class="fu">add_risktable</span>(<span class="at">risktable_stats =</span> <span class="st">"n.risk"</span>) <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5"></a>  <span class="fu">add_risktable_strata_symbol</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-35-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-36-1.png" width="960" class="r-stretch"></section>
 <section id="competing-risks" class="slide level2">
 <h2>Competing Risks</h2>
 <ul>
@@ -2521,14 +2560,14 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <section id="competing-risks-1" class="slide level2">
 <h2>Competing Risks</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>tidycmprsk<span class="sc">::</span><span class="fu">cuminc</span>(<span class="fu">Surv</span>(ttdeath, death_cr) <span class="sc">~</span> trt, tidycmprsk<span class="sc">::</span>trial) <span class="sc">%&gt;%</span></span>
-<span id="cb28-2"><a href="#cb28-2"></a>  <span class="fu">ggcuminc</span>(<span class="at">outcome =</span> <span class="st">"death from cancer"</span>) <span class="sc">+</span></span>
-<span id="cb28-3"><a href="#cb28-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
-<span id="cb28-4"><a href="#cb28-4"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
-<span id="cb28-5"><a href="#cb28-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>tidycmprsk<span class="sc">::</span><span class="fu">cuminc</span>(<span class="fu">Surv</span>(ttdeath, death_cr) <span class="sc">~</span> trt, tidycmprsk<span class="sc">::</span>trial) <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2"></a>  <span class="fu">ggcuminc</span>(<span class="at">outcome =</span> <span class="st">"death from cancer"</span>) <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-37-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-38-1.png" width="960" class="r-stretch"></section>
 <section id="side-by-side" class="slide level2">
 <h2>Side-by-Side</h2>
 <ul>
@@ -2545,19 +2584,19 @@ surg=Extended Time Since Surgery 247    141   3.03    2.01    5.55</code></pre>
 <section id="side-by-side-1" class="slide level2">
 <h2>Side-by-Side</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>p <span class="ot">&lt;-</span> <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, df_colon) <span class="sc">%&gt;%</span></span>
-<span id="cb29-2"><a href="#cb29-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
-<span id="cb29-3"><a href="#cb29-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
-<span id="cb29-4"><a href="#cb29-4"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
-<span id="cb29-5"><a href="#cb29-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span>
-<span id="cb29-6"><a href="#cb29-6"></a></span>
-<span id="cb29-7"><a href="#cb29-7"></a><span class="co"># build plot (which constructs the risktable)</span></span>
-<span id="cb29-8"><a href="#cb29-8"></a>built_p <span class="ot">&lt;-</span> <span class="fu">ggsurvfit_build</span>(p) <span class="sc">|&gt;</span> patchwork<span class="sc">::</span><span class="fu">wrap_plots</span>()</span>
-<span id="cb29-9"><a href="#cb29-9"></a></span>
-<span id="cb29-10"><a href="#cb29-10"></a>built_p <span class="sc">|</span> built_p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>p <span class="ot">&lt;-</span> <span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, df_colon) <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb31-3"><a href="#cb31-3"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb31-4"><a href="#cb31-4"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb31-5"><a href="#cb31-5"></a>  <span class="fu">scale_ggsurvfit</span>()</span>
+<span id="cb31-6"><a href="#cb31-6"></a></span>
+<span id="cb31-7"><a href="#cb31-7"></a><span class="co"># build plot (which constructs the risktable)</span></span>
+<span id="cb31-8"><a href="#cb31-8"></a>built_p <span class="ot">&lt;-</span> <span class="fu">ggsurvfit_build</span>(p) <span class="sc">|&gt;</span> patchwork<span class="sc">::</span><span class="fu">wrap_plots</span>()</span>
+<span id="cb31-9"><a href="#cb31-9"></a></span>
+<span id="cb31-10"><a href="#cb31-10"></a>built_p <span class="sc">|</span> built_p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-39-1.png" width="960" class="r-stretch"></section></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-40-1.png" width="960" class="r-stretch"></section></section>
 <section id="ggsurvfit-wrap-up" class="title-slide slide level1 center">
 <h1>{ggsurvfit} wrap up</h1>
 <ul>
