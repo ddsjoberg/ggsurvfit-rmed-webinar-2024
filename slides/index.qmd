@@ -1,7 +1,7 @@
 ---
 title: "Visualizing Survival Data with the {ggsurvfit} R Package"
 author: "Daniel D. Sjoberg"
-footer: "[{ggsurvfit} R Package](https://danieldsjoberg.com/ggsurvfit-rmed-webinar-2024)"
+footer: "[{ggsurvfit} R Package](https://www.danieldsjoberg.com/ggsurvfit-rmed-webinar-2024/)"
 logo: "images/ggsurvfit-logo.png"
 editor: source
 engine: knitr
