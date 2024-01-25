@@ -1,1 +1,1 @@
-Sitemap: https://github.com/ddsjoberg/ggsurvfit-rmed-webinar-2024/sitemap.xml
+Sitemap: https://ddsjoberg.github.io/ggsurvfit-rmed-webinar-2024/sitemap.xml
