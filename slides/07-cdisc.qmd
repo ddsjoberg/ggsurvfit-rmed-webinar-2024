@@ -7,16 +7,16 @@ library(tidyverse)
 
 Gems for those using the **CDISC ADaM ADTTE** model.
 
+```{r}
+adtte |> select(PARAM, AVAL, CNSR, TRT01P) |> head(3)
+```
+
 - The outcome is coded in the **OPPOSITE** way we expect!😱😱
   - The `Surv_CNSR()` function handles the transformation for us
   - `survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)`
   - This function can be used __anywhere__: use it! Don't screw it up!
   
 - The “PARAM” value is used to construct enhanced labels in the figure.
-
-```{r}
-adtte |> select(PARAM, AVAL, CNSR, TRT01P) |> head(3)
-```
 
 ## CDISC ADaM ADTTE
 

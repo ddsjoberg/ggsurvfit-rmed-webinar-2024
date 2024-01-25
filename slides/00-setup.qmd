@@ -44,3 +44,7 @@ This work is licensed under [Creative Commons Zero v1.0 Universal](https://creat
 :::
 :::
 :::
+
+::: {.notes}
+I've done LOTS of survival analysis and published the results in 100s of papers
+:::

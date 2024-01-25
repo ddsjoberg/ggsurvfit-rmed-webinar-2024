@@ -36,6 +36,7 @@ A note of caution on standards:
 
 ```{r}
 #| output-location: slide
+#| code-line-numbers: "4|5|7"
 
 survfit2(Surv(time, status) ~ surg, data = df_colon) |>
   ggsurvfit(linetype_aes = TRUE) +

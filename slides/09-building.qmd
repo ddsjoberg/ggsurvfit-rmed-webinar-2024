@@ -30,5 +30,6 @@ p <- survfit2(Surv(time, status) ~ 1, df_colon) %>%
 # build plot (which constructs the risktable)
 built_p <- ggsurvfit_build(p) |> patchwork::wrap_plots()
 
-built_p | built_p
+# I am hoping in the future was can just call `p | p`
+built_p | built_p   
 ```

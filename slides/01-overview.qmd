@@ -14,9 +14,6 @@
 
 ## Survival Analysis
 
-This is the briefest overview. 
-For more details, review the resources below.
-
 ::: {.small}
 
 > Clark, T., Bradburn, M., Love, S., & Altman, D. (2003). _Survival analysis part I: Basic concepts and first analyses_. 232-238. ISSN 0007-0920.
@@ -27,6 +24,13 @@ For more details, review the resources below.
 
 > Clark, T., Bradburn, M., Love, S., & Altman, D. (2003). _Survival analysis part IV: Further concepts and methods in survival analysis_. 781-786. ISSN 0007-0920.
 
+:::
+
+
+::: {.notes}
+- This is the briefest overview. 
+
+- For more details, review the resources below.
 :::
 
 ## Survival Analysis
@@ -194,7 +198,7 @@ df_censoring |>
 
 - We observe the follow-up in the solid line
 
-- The dashed line in __unobserved__
+- The dashed line is __unobserved__
 
 - How can we summarize the average time from treatment to death?
 

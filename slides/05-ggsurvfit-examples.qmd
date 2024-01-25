@@ -1,7 +1,5 @@
 # Additional examples
 
-# Default and styled modifications with ggplot2
-
 ```{r}
 #| echo: false
 #| message: false
@@ -165,6 +163,10 @@ p
 
 ::::
 
+::: {.notes}
+INCREMENT SLIDES
+:::
+
 ## Further Risktable Customization 
 
 - Here, we customize the risktable portion of the plot.
@@ -191,7 +193,7 @@ survfit2(Surv(time, status) ~ surg, data = df_colon) %>%
 
 
 
-# Another Example
+## Another Example
 
 ```{r}
 #| output-location: slide
@@ -209,3 +211,7 @@ survfit2(Surv(time, status) ~ surg, data = df_colon) |>
   scale_fill_manual(values = c('#54738E', '#82AC7C')) +
   labs(y = "Risk of Recurrence")
 ```
+
+::: {.notes}
+INCREMENT THIS SLIDE
+:::

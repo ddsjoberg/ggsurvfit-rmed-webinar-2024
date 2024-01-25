@@ -22,9 +22,9 @@ Well that sounds confusing!
 ## Competing Risks
 
 ```{r}
-tidycmprsk::cuminc(Surv(ttdeath, death_cr) ~ trt, tidycmprsk::trial) %>%
+tidycmprsk::cuminc(Surv(ttdeath, death_cr) ~ trt, tidycmprsk::trial) |> 
   ggcuminc(outcome = "death from cancer") +
   add_confidence_interval() +
   add_risktable() +
-  scale_ggsurvfit()
+  scale_ggsurvfit(x_scales = list(breaks = seq(0, 24, by = 6)))
 ```

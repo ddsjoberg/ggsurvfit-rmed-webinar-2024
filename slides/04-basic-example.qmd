@@ -15,6 +15,11 @@ sf2 <- ggsurvfit::survfit2(Surv(time, status) ~ surg, data = df_colon)
 sf2
 ```
 
+::: {.notes}
+- survival package uses `survfit()`, which works with ggsurvfit too!
+
+- ggsurvfit uses `survfti2()` which has some benefits we will discuss
+:::
 
 ## Kaplan-Meier Basics
 
