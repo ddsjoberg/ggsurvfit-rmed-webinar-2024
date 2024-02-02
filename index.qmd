@@ -52,3 +52,7 @@ Daniel is the winner of the 2021 American Statistical Association (ASA) Innovati
 [`r fontawesome::fa("github")`](https://github.com/ddsjoberg/)
 [`r fontawesome::fa("mastodon")`](https://mastodon.social/@ddsjoberg)
 
+
+# Recording 
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/F-N_Pz2sPlg?si=jT2o9N-klLt7JcxD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
